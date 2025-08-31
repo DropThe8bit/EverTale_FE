@@ -1,0 +1,175 @@
+/* 전체 폼을 감싸는 컨테이너 */
+.login-container {
+	width: 100%;
+	max-width: 850px;
+	/* 폼의 최대 너비 */
+	margin: 180px auto;
+	/* 페이지 중앙에 위치 (상하 여백 4rem) */
+	padding: 2rem;
+	font-family: sans-serif;
+}
+
+.login-container p {
+	text-align: center;
+	color: #333;
+	font-size: 32px;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+}
+
+.login-separator {
+	height: 1px;
+	width: 100%;
+	max-width: 945px;
+	background-color: var(--color-primary-20);
+	margin: 0 auto 30px;
+}
+
+
+/* 각 입력 필드(레이블 + 인풋)를 묶는 div */
+.login-group {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	/* 줄 간격 */
+	max-width: 860px;
+	/* 이미지 느낌의 폭 */
+}
+
+/* 한 줄(라벨+인풋) */
+.login-input {
+	margin: auto;
+}
+
+/* 라벨을 가로 정렬 */
+.login-label {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+/* 왼쪽 라벨 텍스트 영역 고정폭 */
+.login-text {
+	width: 120px;
+	/* 필요하면 130~140px로 조정 */
+	font-weight: 400;
+	color: #131313;
+	letter-spacing: -0.2px;
+}
+
+/* 라벨의 빨간 */
+.req {
+	color: #e1352f;
+	margin-left: 4px;
+}
+
+/* 인풋 스타일 (오른쪽 둥근 박스) */
+.login-label input {
+	height: 45px;
+	width: 400px;
+	padding: 0 10px;
+	border: 1px solid #1e1e1e;
+	border-radius: 10px;
+	background: #ffffff;
+	outline: none;
+	font-size: 16px;
+}
+
+/* placeholder 색 */
+.login-label input::placeholder {
+	color: #b9b9b9;
+	width: 300px;
+}
+
+/* 포커스 시 */
+.login-label input:focus {
+	border-color: #8DAE6E;
+}
+
+/* 에러 메시지 */
+.form-error {
+	color: #e1352f;
+	margin-top: 6px;
+	font-weight: 600;
+}
+
+/* 제출 버튼 */
+.login-submit {
+	margin: 30px auto 0px auto;
+	height: 45px;
+	border-radius: 10px;
+	background: var(--color-primary-10);
+	border: 2px solid #8DAE6E;
+	color: #fff;
+	font-weight: 600;
+	font-size: 20px;
+	cursor: pointer;
+	width: 400px;
+}
+
+.go-signup-button {
+	margin: 0px auto 10px auto;
+	height: 45px;
+	border-radius: 10px;
+	border: 1px solid #8DAE6E;
+	background-color: var(--color-background-10);
+	width: 400px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.go-signup-button p {
+	color: #8DAE6E;
+	font-weight: 600;
+	font-size: 20px;
+	margin: 0;
+	/* 기본 p 마진 제거 */
+}
+
+
+.other-login-mention {
+	display: flex;
+	justify-content: center;
+	font-size: 14px;
+	color: #737373;
+	margin-bottom: 10px;
+}
+
+
+.naver-login-button {
+	margin: 0px auto 10px auto;
+	height: 45px;
+	border-radius: 10px;
+	border: 1px solid #8DAE6E;
+	background-color: var(--color-background-10);
+	width: 400px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-right:130px;
+}
+
+.naver-login-button p {
+	color: #3a3a3a;
+	font-weight: 400;
+	font-size: 18px;
+	margin: 0;
+}
+
+.naver-logo {
+	background-color: #2DB400;
+	margin-left: 0;
+	height: 45px;
+	width: 50px;
+	border-radius: 10px 0 0 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.naver-logo span {
+	color: #ffffff;
+	font-weight: 800;
+	font-size: 26px;
+}

@@ -13,6 +13,10 @@ export default [
     //   // 작품을 고르고 ..? 
     // ]),
     route("/mybook", "./Mybook/Mybook.jsx"),
+    route("/mypage/auth/signup", "./Mypage/SignUpPage.jsx"),
+    route("/mypage/auth/login", "./Mypage/LoginPage.jsx"),
+
+    // route("/signup")
   ]),
   // layout("./Layouts/reading.jsx", [
   //   // 다른 작가의 책읽기 
@@ -24,6 +28,11 @@ export default [
   // ]),
 
   layout("./Layouts/NavSide.jsx", [ // 마이페이지
-    route("/mypage", "./Mypage/ParentPage.jsx"),
+    route("/mypage", "./Mypage/ParentPage.jsx"), // 부모 화면
+  ]),
+  layout("./Layouts/NavSideChild.jsx", [ // 마이페이지
+    // route("/auth/signup", "./Mypage/SignUpPage.jsx"),
+    route("/childpage", "./Mypage/ChildPage.jsx"), // 아이 화면
   ]),
 ];
+// 아이 화면 <-> 부모 화면 만들어 질거라 라우터 경로 잘 생성해야해!!!

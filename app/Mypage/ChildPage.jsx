@@ -23,21 +23,13 @@ export default function ParentPage() {
 				{dummyProfile.map((char, index) => (
 					<div key={index} className="my-profile-card">
 						<div className="my-profile-guide">
-							<li>아이 이름</li>
-							<li>비밀번호</li>
-							<li>이메일</li>
-							<li>휴대폰</li>
+							<li>이름</li>
+							<li>소속기관</li>
 						</div>
 						<div className="my-profile-information">
 							<li>{char.username}</li>
-							<li>{char.password}</li>
-							<li>{char.email}</li>
-							<li>{char.phone}</li>
+							<li>{char.department}</li>
 						</div>
-						<Link to="/update" className="my-profile-update">
-            <p>회원정보수정</p>
-          </Link>
-
 					</div>
 				))}
 			</div>

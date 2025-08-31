@@ -1,0 +1,109 @@
+/* parent, child 공통 */
+
+.mypage-top {
+	display: flex;
+	width: 100%;
+	height: 250px;
+	align-items: center;
+	justify-content: flex-start;
+	background-color: var(--color-gray-10);
+	border-bottom: 1px solid #D1D1D1;
+}
+
+.my-name-card {
+	display: flex;
+	gap: 20px;
+	margin-top: 70px;
+	margin-left: 300px;
+}
+
+.my-title-and-name {
+	font-family: "BM Jua";
+	font-size: 24px;
+	font-weight: 600;
+	align-self: center;
+}
+
+.my-name-card img {
+	width: 130px;
+	height: 130px;
+}
+
+.mypage-middle {
+	margin-left: 240px;
+	/* padding: 40px 20px 0 0  ; */
+}
+
+
+.my-profile-card {
+	display: flex;
+}
+
+.my-profile-guide {
+	margin-top: 32px;
+	margin-left: 60px;
+	margin-right: 0;
+}
+
+.my-profile-information{
+	margin-top: 32px;
+	margin-left: 32px;
+	margin-right: 0;
+
+}
+
+.my-profile-guide li{
+  display: flex;
+	flex-direction: column;
+	gap: 40px;
+	text-align: right;
+	font-size: 16px;
+	font-weight: 400;
+	color: #777;
+	text-decoration: none;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.my-profile-information li{
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+	text-align: left;
+	font-size: 16px;
+	font-weight: 400;
+	text-decoration: none;
+	padding-top: 12px;
+  padding-bottom: 12px;
+
+}
+
+.my-profile-update {
+	font-size: 12px;
+	font-weight: 400;
+	color: #777;
+	margin-top: 44px;
+	margin-left: 60px;
+}
+
+
+
+.mypage-bottom {
+	position: fixed;
+	/* 화면에 고정 */
+	bottom: 0;
+	display: flex;
+	width: 100%;
+	height: 100px;
+	align-items: center;
+	justify-content: flex-end;
+	background-color: var(--color-gray-10);
+	border-top: 1px solid #D1D1D1;
+}
+
+.mypage-bottom img {
+	align-items: center;
+	height: 40px;
+}
+
+/* parent 부분 */

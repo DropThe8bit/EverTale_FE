@@ -1,42 +1,52 @@
 .navside-bar {
+  position: fixed;
   width: 240px;
   height: 100vh;
   background-color: #B3CE9A;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 24px 0;
-  margin-left: 0;
+  padding: 150px 0 24px 20px;
+  margin: 0;
+  border-right: 1px solid #D1D1D1;
+  z-index: 2000;
 }
 
 .navside-top {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 34px;
-  margin-top: 100px;
+  width: 100%;
+  text-decoration: none;
+  gap:16px;
 }
 
 .navside-mypage {
   background-color: white;
-  padding: 12px 64px;
-  margin: 0 0 -10px 30px;
+  padding-right: 60px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   border-radius: 12px 0 0 12px;
+  width: 100%;
   font-weight: bold;
+  font-size: 16px;
   color: black;
-  text-decoration: none;
+  text-align: right;
 }
 
 .navside-item {
   color: black;
   font-size: 16px;
-  margin-right: 65px;
+  padding-right: 60px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  width: 100%;
 }
 
 .navside-item:hover {
   background-color: rgb(226, 237, 218);
-  padding: 10px 60px;
-  margin-right: 0;
+  /* background-color: #ffffff; */
   border-radius: 12px 0 0 12px;
 }
 
