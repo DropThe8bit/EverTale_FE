@@ -21,7 +21,7 @@
 	height: 1px;
 	width: 100%;
 	max-width: 945px;
-	background-color: var(--color-primary-20);
+	background-color: var(--color-primary-10);
 	margin: 0 auto 30px;
 }
 
@@ -147,7 +147,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding-right:130px;
+	padding-right: 130px;
 }
 
 .naver-login-button p {

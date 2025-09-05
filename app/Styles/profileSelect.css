@@ -1,0 +1,102 @@
+/* 개별 프로필 아이템 */
+.profile-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 프로필 이미지 감싸는 박스 */
+.profile-avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-avatar-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+/* 프로필 이미지 */
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 프로필 이름 입력란 */
+.profile-name {
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+  width: 120px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.profile-name:focus {
+  outline: none;
+  background-color: #EFEFEF;
+}
+
+.profile-selector-container {
+	width: 100%;
+	max-width: 850px;
+	/* 폼의 최대 너비 */
+	margin: 180px auto;
+	/* 페이지 중앙에 위치 (상하 여백 4rem) */
+	padding: 2rem;
+}
+
+.profile-selector-container p {
+	text-align: center;
+	color: #333;
+	font-size: 32px;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+}
+
+.profile-list-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.profile-list {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap; /* 화면 작아지면 다음 줄로 */
+  justify-content: center;
+  margin: 0;
+}
+
+/* 프로필 추가 버튼 */
+.add-profile-button {
+  width: 40px;
+  height: 40px;
+  background-color: #8DAE6E;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  color: white;
+  font-size: 36px;
+  line-height: 1;
+  margin: 40px 0px auto 25px; /* 위치 조정을 위함 */
+}
+
+.add-profile-button:hover {
+  background-color: #B3CE9A;
+  transform: scale(1.05);
+}

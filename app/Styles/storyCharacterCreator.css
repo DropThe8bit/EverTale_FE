@@ -1,0 +1,229 @@
+.story-character-creator-title {
+	width: 100%;
+	max-width: 850px;
+	/* 폼의 최대 너비 */
+	margin: 220px auto 0;
+	/* 페이지 중앙에 위치 (상하 여백 4rem) */
+	text-align: center;
+	color: #333;
+	font-size: 32px;
+	font-weight: 600;
+}
+
+.character-creator-separator {
+	height: 1px;
+	width: 100%;
+	max-width: 520px;
+	background-color: var(--color-primary-10);
+}
+
+/* 전체 레이아웃 */
+.character-creator-container {
+	display: flex;
+	gap: 40px;
+	padding: 30px;
+	margin-bottom: 100px;
+	max-width: 945px;
+	background-color: #fcfbf8;
+	border-radius: 12px;
+	color: #333;
+}
+
+.form-section {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+}
+
+.uploader-section {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+/* 폼 그룹 스타일 */
+.form-group {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+	margin: 0;
+}
+
+.form-group label {
+	width: 40px;
+	font-weight: bold;
+	color: #585858;
+	padding-top: 6px;
+	margin: 0;
+	font-size: 18px;
+}
+
+/* 기본 Input & Textarea 스타일 */
+input[type="text"] {
+	/* flex: 1; */
+	width: 240px;
+	padding: 6px 10px;
+	border: 1px solid #777;
+	border-radius: 12px;
+	font-size: 16px;
+	transition: border-color 0.2s;
+	margin-left: 0;
+}
+
+input[type="text"]:focus {
+	outline: none;
+	border-color: #8cbf8c;
+}
+
+input[type="text"][disabled] {
+	background-color: #f0f0f0;
+	cursor: not-allowed;
+}
+
+textarea {
+	height: 100px;
+	resize: vertical;
+}
+
+/* 체크박스와 라디오 버튼의 개별 컨테이너 */
+.checkbox-wrapper,
+.radio-wrapper {
+	display: flex;
+	/* Flexbox 활성화 */
+	align-items: center;
+	/* 내부 항목(버튼, 라벨) 세로 중앙 정렬 */
+	justify-content: center;
+	/* 내부 항목 가로 중앙 정렬 */
+	gap: 6px;
+	margin: 0;
+}
+
+/* 라벨 스타일 */
+.checkbox-wrapper label,
+.radio-wrapper label {
+	cursor: pointer;
+	margin: 0;
+	/* 불필요한 스타일 제거로 단순화 */
+	width: 80px;
+	font-size: 18px;
+	font-weight: 400;
+}
+
+/* '여자', '남자', '기타'를 모두 감싸는 그룹 */
+.radio-group {
+	display: flex;
+	justify-content: flex-start;
+	/* 그룹 내 아이템들을 왼쪽부터 정렬 (아래 설명 참고) */
+	gap: 20px;
+	margin: 0;
+	flex: 1;
+}
+
+/* 성격 버튼 그리드 */
+.personality-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+}
+
+.trait-btn {
+	padding: 6px 8px;
+	border: 1px solid #777;
+	background-color: #fff;
+	border-radius: 8px;
+	cursor: pointer;
+	width: 100px;
+	font-size: 16px;
+	transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.trait-btn:hover {
+	border-color: #a5a5a5;
+}
+
+.trait-btn.selected {
+	background-color: #8DAE6E;
+	border-color: #8DAE6E;
+	color: #ffffff;
+	font-weight: 600;
+}
+
+/* 이미지 업로더 */
+.image-uploader {
+	width: 100%;
+	height: 320px;
+	border: 1px solid #777;
+	border-radius: 12px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	background-color: #fff;
+	transition: border-color 0.2s, background-color 0.2s;
+	overflow: hidden;
+}
+
+.image-uploader:hover {
+	border-color: #8cbf8c;
+	background-color: #f9f9f9;
+}
+
+.uploader-placeholder {
+	text-align: center;
+	color: #969696;
+}
+
+.folder-icon {
+	font-size: 3rem;
+}
+
+.uploader-section textarea {
+	width: 100%;
+	height: 78px;
+	padding: 10px 15px;
+	border: 1px solid #ECECEC;
+	border-radius: 12px;
+	font-size: 16px;
+	transition: border-color 0.2s;
+	background-color: #ECECEC;
+}
+
+.uploader-section textarea:focus {
+	outline: none;
+	border-color: #8cbf8c;
+}
+
+.image-preview {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+
+
+/* 제출 버튼 기본 스타일 (비활성화 상태) */
+.submit-btn {
+	margin-right: 0;
+  padding: 10px 20px;
+  background-color: #ccc; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+	transition: background-color 0.2s ease; 
+}
+
+/* 모든 항목이 채워졌을 때 적용될 활성화 스타일 */
+.submit-btn.active {
+  background-color: #8DAE6E; 
+}
+
+.submit-btn.active:hover {
+  background-color: rgb(135, 171, 135);
+	cursor: pointer; /* 커서를 포인터로 변경 */
+
+}
