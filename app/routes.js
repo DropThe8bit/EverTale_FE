@@ -5,7 +5,7 @@ export default [
     index("./index.jsx"), // 모두의 책장 (무조건 로그인 후에 서비스 사용가능하다고 전제!)
     route("/story", "./Story/StoryCharacterCreator.jsx"), // 스토리 만들기
     route("/story/category", "./Story/StoryCategoryPage.jsx"),
-    //   route("/story/content/:gid", "./Story/StoryContentPage.jsx"),
+    route("/content", "./Story/StoryContentPage.jsx"),
 
     // route("/easter", "./EasterEgg/EasterEggChoice.jsx", [ // 이스터 에그
     //   // route("/easter/message/:gid", "./Easter/"),

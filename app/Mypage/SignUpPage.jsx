@@ -6,7 +6,6 @@ import { signUpUser } from "~/data/mypage.server";
 
 export async function action({ request }) {
   const formData = await request.formData();
-  // 'as string' 타입 캐스팅을 제거했습니다.
   const email = formData.get("email");
   const password = formData.get("password");
   const username = formData.get("username");
@@ -31,10 +30,8 @@ export async function action({ request }) {
   }
 }
 
-// 3. 사용자에게 보여줄 UI 컴포넌트
 export default function SignUpPage() {
-  // action에서 반환된 데이터를 가져옵니다 (에러 메시지 등)
-  // 제네릭 타입 <typeof action>을 제거했습니다.
+  // action에서 반환된 데이터 (에러 메시지 등)
   const actionData = useActionData();
 
   return (
