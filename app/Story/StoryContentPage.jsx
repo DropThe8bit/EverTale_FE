@@ -32,7 +32,6 @@ function EditNextStoryModal({ currentText, onClose, onSave }) {
 	);
 }
 
-
 function BookNameModal({ onClose, onSubmit }) {
 	const [bookName, setBookName] = useState('');
 

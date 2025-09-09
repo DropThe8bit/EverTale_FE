@@ -67,7 +67,7 @@ function StoryCharacterCreator() {
 		imagePreview !== null &&
 		character.description.trim() !== '';
 
-		// 새 스토리를 생성할 때 id만 생성하여 반환
+	// 새 스토리를 생성할 때 id만 생성하여 반환
 	const handleSubmit = () => {
 		// isFormValid가 true일 때만 제출 로직을 실행합니다.
 		if (isFormValid) {

@@ -6,9 +6,9 @@ export default function NavSide() {
 		<div>
 			<div className="navside-bar">
 				<div className="navside-top">
-					<Link to="/mypage" className="navside-mypage">마이페이지&gt;</Link>
-					<Link to="/story" className="navside-item">스토리 만들기 &gt;</Link>
-					<Link to="/mybook" className="navside-item">나만의 책장 &gt;</Link>
+					<Link to="/mypage?user=child" className="navside-mypage">마이페이지&gt;</Link>
+					<Link to="/story?user=child" className="navside-item">스토리 만들기 &gt;</Link>
+					<Link to="/mybook?user=child" className="navside-item">나만의 책장 &gt;</Link>
 				</div>
 
 				<div className="navside-bottom">

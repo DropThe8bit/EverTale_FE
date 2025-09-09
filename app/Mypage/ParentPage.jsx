@@ -13,7 +13,7 @@ export default function ParentPage() {
 				{dummyProfile.map((char, index) => (
 					<div key={index} className="my-name-card">
 						<img src={char.image} alt={char.name} />
-						<div className="my-title-and-name">{char.title}<br />{char.username} 작가님</div>
+						<div className="my-title-and-name">{char.title}<br />{char.username} 작가 부모님</div>
 					</div>
 				))}
 
