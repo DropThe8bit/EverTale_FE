@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 export default function StoryCategoryPage() {
   const location = useLocation();
-  const navigate = useNavigate(); // 페이지 이동을 위해 추가
+  const navigate = useNavigate(); 
   const characterData = location.state?.character;
 
   // 선택된 카테고리, 첫 장면, 제작 모드를 관리할 state 추가
@@ -54,16 +54,18 @@ export default function StoryCategoryPage() {
         body: JSON.stringify(storyData),
       });
 
-      if (!response.ok) {
-        throw new Error('서버 응답에 문제가 발생했습니다.');
-      }
+      // if (!response.ok) {
+      //   throw new Error('서버 응답에 문제가 발생했습니다.');
+      // }
 
-      const result = await response.json(); // 백엔드로부터 받은 결과
-      console.log('서버로부터 받은 응답:', result);
+      // const result = await response.json(); // 백엔드로부터 받은 결과
+      // console.log('서버로부터 받은 응답:', result);
 
       alert('멋진 이야기가 곧 시작됩니다!');
       // 성공 시 결과 페이지 등으로 이동할 수 있습니다.
       // navigate('/story/content', { state: { story: result } });
+			navigate('/story/content/1');
+
 
     } catch (error) {
       console.error('스토리 생성 중 오류 발생:', error);
@@ -87,7 +89,7 @@ export default function StoryCategoryPage() {
             className={`story-category-item ${selectedCategory === category.name ? 'selected' : ''}`}
             onClick={() => handleCategoryClick(category.name)}
           >
-            <div className="image-wrapper">
+            <div className="story-category-image-wrapper">
               <img src={category.imgSrc} alt={category.name} />
             </div>
           </div>
@@ -118,7 +120,7 @@ export default function StoryCategoryPage() {
 
       {/* isFormValid 값에 따라 disabled 상태와 active 클래스가 결정됩니다. */}
       <button
-        className={`submit-btn ${isFormValid ? 'active' : ''}`}
+        className={`story-category-submit-btn ${isFormValid ? 'active' : ''}`}
         onClick={handleSubmit}
         disabled={!isFormValid}
       >

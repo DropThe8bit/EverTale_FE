@@ -10,7 +10,7 @@
 	font-weight: 600;
 }
 
-.character-creator-separator {
+.story-character-separator {
 	height: 1px;
 	width: 100%;
 	max-width: 520px;
@@ -18,7 +18,7 @@
 }
 
 /* 전체 레이아웃 */
-.character-creator-container {
+.story-character-container {
 	display: flex;
 	gap: 40px;
 	padding: 30px;
@@ -29,14 +29,14 @@
 	color: #333;
 }
 
-.form-section {
+.story-character-form-section {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	gap: 32px;
 }
 
-.uploader-section {
+.story-character-uploader-section {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -44,14 +44,14 @@
 }
 
 /* 폼 그룹 스타일 */
-.form-group {
+.story-character-form-group {
 	display: flex;
 	align-items: flex-start;
 	gap: 24px;
 	margin: 0;
 }
 
-.form-group label {
+.story-character-form-group label {
 	width: 40px;
 	font-weight: bold;
 	color: #585858;
@@ -129,7 +129,7 @@ textarea {
 	gap: 20px;
 }
 
-.trait-btn {
+.story-character-trait-btn {
 	padding: 6px 8px;
 	border: 1px solid #777;
 	background-color: #fff;
@@ -140,11 +140,11 @@ textarea {
 	transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.trait-btn:hover {
+.story-character-trait-btn:hover {
 	border-color: #a5a5a5;
 }
 
-.trait-btn.selected {
+.story-character-trait-btn.selected {
 	background-color: #8DAE6E;
 	border-color: #8DAE6E;
 	color: #ffffff;
@@ -152,7 +152,7 @@ textarea {
 }
 
 /* 이미지 업로더 */
-.image-uploader {
+.story-character-image-uploader {
 	width: 100%;
 	height: 320px;
 	border: 1px solid #777;
@@ -166,21 +166,21 @@ textarea {
 	overflow: hidden;
 }
 
-.image-uploader:hover {
+.story-character-image-uploader:hover {
 	border-color: #8cbf8c;
 	background-color: #f9f9f9;
 }
 
-.uploader-placeholder {
+.story-character-uploader-placeholder {
 	text-align: center;
 	color: #969696;
 }
 
-.folder-icon {
+.story-character-folder-icon {
 	font-size: 3rem;
 }
 
-.uploader-section textarea {
+.story-character-uploader-section textarea {
 	width: 100%;
 	height: 78px;
 	padding: 10px 15px;
@@ -191,12 +191,12 @@ textarea {
 	background-color: #ECECEC;
 }
 
-.uploader-section textarea:focus {
+.story-character-uploader-section textarea:focus {
 	outline: none;
 	border-color: #8cbf8c;
 }
 
-.image-preview {
+.story-character-image-preview {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
@@ -205,7 +205,7 @@ textarea {
 
 
 /* 제출 버튼 기본 스타일 (비활성화 상태) */
-.submit-btn {
+.story-character-submit-btn {
 	margin-right: 0;
   padding: 10px 20px;
   background-color: #ccc; 
@@ -218,11 +218,11 @@ textarea {
 }
 
 /* 모든 항목이 채워졌을 때 적용될 활성화 스타일 */
-.submit-btn.active {
+.story-character-submit-btn.active {
   background-color: #8DAE6E; 
 }
 
-.submit-btn.active:hover {
+.story-character-submit-btn.active:hover {
   background-color: rgb(135, 171, 135);
 	cursor: pointer; /* 커서를 포인터로 변경 */
 
