@@ -1,5 +1,7 @@
 .navside-bar {
   position: fixed;
+  top:0;
+  left:0;
   width: 240px;
   height: 100vh;
   background-color: #B3CE9A;
@@ -7,7 +9,6 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 150px 0 24px 20px;
-  margin: 0;
   border-right: 1px solid #D1D1D1;
   z-index: 2000;
 }
@@ -48,6 +49,19 @@
   background-color: rgb(226, 237, 218);
   /* background-color: #ffffff; */
   border-radius: 12px 0 0 12px;
+}
+
+.navside-item.active {
+  background-color: white;
+  padding-right: 60px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 12px 0 0 12px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 16px;
+  color: black;
+  text-align: right;
 }
 
 .navside-bottom {

@@ -6,9 +6,9 @@ export default function NavSide() {
 		<div>
 			<div className="navside-bar">
 				<div className="navside-top">
-					<Link to="/mypage?user=child" className="navside-mypage">마이페이지&gt;</Link>
-					<Link to="/story?user=child" className="navside-item">스토리 만들기 &gt;</Link>
-					<Link to="/mybook?user=child" className="navside-item">나만의 책장 &gt;</Link>
+					<NavLink to="/mypage?user=child" className="navside-item">마이페이지 &gt;</NavLink>
+					<NavLink to="/story?user=child" className="navside-item">스토리 만들기 &gt;</NavLink>
+					<NavLink to="/mybook?user=child" className="navside-item">나만의 책장 &gt;</NavLink>
 				</div>
 
 				<div className="navside-bottom">
@@ -20,7 +20,7 @@ export default function NavSide() {
 					</Link>
 				</div>
 			</div>
-			<Outlet />
+			{/* <Outlet /> */}
 
 		</div>
 

@@ -1,0 +1,119 @@
+.book-layout {
+	width: 100%;
+	height: calc(100vh - 90px);
+	/* 네비바 높이를 뺀 나머지 화면 높이 */
+	margin-top: 90px;
+	/* 네비바를 위한 상단 여백 */
+	background-color: #B6CF9F;
+	/* 이미지 밖 배경색 */
+	display: grid;
+	/* justify-content: center;
+  align-items: center; */
+
+}
+
+/* 책 배경 이미지를 포함하는 컨테이너 */
+.book-container {
+	width: 100%;
+	max-width: 1100px;
+	min-width: 900px;
+	aspect-ratio: 1.9 / 1;
+	/* 책의 가로세로 비율 (이미지에 맞게 조절) */
+	position: relative;
+
+	/* 배경 이미지 설정 */
+	background-size: contain;
+	/* 이미지가 잘리지 않고 컨테이너 안에 꽉 차게 */
+	background-position: center;
+	background-repeat: no-repeat;
+
+	/* 내부 콘텐츠 정렬 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.book-info-container {
+	display: flex;
+	width: 1000px;
+	margin-top: 20px;
+}
+
+.book-info {
+	width: 45%;
+	padding-left: 70px;
+	margin-left: 0;
+}
+
+.book-info h2 {
+	margin-left: 0;
+	color: #425C29;
+	font-size: 32px;
+}
+
+.book-info p {
+	color: #425C29;
+	font-size: 18px;
+}
+
+.book-info-header {
+	display: flex;
+	gap: 10px;
+}
+
+.book-reader-voice-button {
+	background-color: #fcfcfc;
+	color: #425C29;
+	border: none;
+	border-radius: 20px;
+	width: 100px;
+	height: 30px;
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+
+
+
+/* 실제 페이지 내용 (그림 + 글)이 들어갈 영역 */
+.book-pages {
+	position: absolute;
+	width: 78%;
+	height: 70%;
+	top: 14%;
+	left: 11%;
+	gap: 5%;
+
+	display: flex;
+	z-index: 1000;
+}
+
+.book-page {
+	flex: 1;
+	/* 양 페이지가 동일한 너비를 갖도록 함 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0;
+	/* 페이지 안쪽 여백 */
+	box-sizing: border-box;
+}
+
+.left-page img {
+	width: 300px;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.right-page .story-text {
+	width: 300px;
+	font-size: 16px;
+	line-height: 1.9;
+	color: #333;
+	white-space: pre-wrap;
+	height: 100%;
+	overflow-y: auto;
+}

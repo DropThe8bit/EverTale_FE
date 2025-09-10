@@ -51,7 +51,6 @@ export default function NavHeader() {
           </ul>
         </nav>
       </header>
-      <Outlet />
     </>
   );
 }

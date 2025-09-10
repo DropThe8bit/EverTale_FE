@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+import { useSearchParams, Outlet } from "react-router";
 
 import NavHeader from "../components/navigation/NavHeader";
 import NavHeaderChild from "../components/navigation/NavHeaderChild"
@@ -17,6 +17,7 @@ export default function IndexNav() {
 					<NavHeader />
 				</>
 			)}
+			<Outlet />
 		</div>
 	)
 }

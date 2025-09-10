@@ -6,10 +6,10 @@ export default function NavSide() {
     <div>
       <div className="navside-bar">
         <div className="navside-top">
-          <Link to="/mypage" className="navside-mypage">마이페이지&gt;</Link>
-          <Link to="/story" className="navside-item">스토리 만들기 &gt;</Link>
-          <Link to="/easter" className="navside-item">이스터에그 &gt;</Link>
-          <Link to="/mybook" className="navside-item">나만의 책장 &gt;</Link>
+          <NavLink to="/mypage" className="navside-item">마이페이지 &gt;</NavLink>
+          <NavLink to="/story" className="navside-item">스토리 만들기 &gt;</NavLink>
+          <NavLink to="/easter" className="navside-item">이스터에그 &gt;</NavLink>
+          <NavLink to="/mybook" className="navside-item">나만의 책장 &gt;</NavLink>
         </div>
 
         <div className="navside-bottom">
@@ -21,8 +21,6 @@ export default function NavSide() {
           </Link>
         </div>
       </div>
-      <Outlet />
-
     </div>
 
   );
