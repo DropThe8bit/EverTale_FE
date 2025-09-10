@@ -17,7 +17,7 @@ function EditNextStoryModal({ currentText, onClose, onSave }) {
 				{/* 생성된 질문 */}
 				<p>소연이는 할머니의 다락방에서 반짝이는 상자를 발견했어요.
 
-					소연이는 뭘 발견했을까요? ?</p>
+					소연이는 뭘 발견했을까요?</p>
 				<textarea
 					className="story-edit-modal-textarea"
 					value={editedText}

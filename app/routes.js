@@ -19,10 +19,10 @@ export default [
     // route("/signup")
   ]),
   // layout("./Layouts/NavHeaderChild.jsx", [
-  //   route("/childindex.jsx", "./index.jsx"), // 모두의 책장 (무조건 로그인 후에 서비스 사용가능하다고 전제!)
-  // ]),
-  layout("./Layouts/IndexNavSimple.jsx", [
-    route("/mybook/ex", "./ReaderView/BookReaderView.jsx"),
+    //   route("/childindex.jsx", "./index.jsx"), // 모두의 책장 (무조건 로그인 후에 서비스 사용가능하다고 전제!)
+    // ]),
+    layout("./Layouts/IndexNavSimple.jsx", [
+    route("/mybook/bookview", "./BookReader/BookReader.jsx"), // 책읽기 화면
     // // 다른 작가의 책읽기 
     // route("/book", "./BookView/BookReader.jsx", { id: "book-reader" }),
     // route("/book/quiz/:gid", "./Book/QuizPage.jsx", { id: "book-quiz" }),
@@ -32,7 +32,7 @@ export default [
   ]),
 
   layout("./Layouts/IndexNavSide.jsx", [ // 마이페이지
-    route("/mypage", "./Mypage/IndexMypage.jsx"), // 부모 화면
+    route("/mypage", "./Mypage/IndexMypage.jsx"), 
   ]),
 ];
 // 아이 화면 <-> 부모 화면 만들어 질거라 라우터 경로 잘 생성해야해!!!

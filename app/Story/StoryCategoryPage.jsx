@@ -61,6 +61,7 @@ export default function StoryCategoryPage() {
       // const result = await response.json(); // 백엔드로부터 받은 결과
       // console.log('서버로부터 받은 응답:', result);
 
+      alert('멋진 이야기가 곧 시작됩니다!');
       // 성공 시 결과 페이지 등으로 이동할 수 있습니다.
       // navigate('/story/content', { state: { story: result } });
 			navigate('/story/content/1');

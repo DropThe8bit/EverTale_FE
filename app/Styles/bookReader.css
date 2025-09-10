@@ -1,31 +1,24 @@
-.book-layout {
+.book-reader-view-layout {
 	width: 100%;
-	height: calc(100vh - 90px);
-	/* 네비바 높이를 뺀 나머지 화면 높이 */
+    min-height: calc(100vh - 90px); 
+	
 	margin-top: 90px;
-	/* 네비바를 위한 상단 여백 */
 	background-color: #B6CF9F;
-	/* 이미지 밖 배경색 */
 	display: grid;
-	/* justify-content: center;
-  align-items: center; */
-
 }
 
 /* 책 배경 이미지를 포함하는 컨테이너 */
-.book-container {
+.book-cover-container {
 	width: 100%;
 	max-width: 1100px;
 	min-width: 900px;
 	aspect-ratio: 1.9 / 1;
 	/* 책의 가로세로 비율 (이미지에 맞게 조절) */
 	position: relative;
-
-	/* 배경 이미지 설정 */
 	background-size: contain;
-	/* 이미지가 잘리지 않고 컨테이너 안에 꽉 차게 */
-	background-position: center;
+	background-position: center 90%;
 	background-repeat: no-repeat;
+	overflow: hidden;
 
 	/* 내부 콘텐츠 정렬 */
 	display: flex;
@@ -36,7 +29,8 @@
 .book-info-container {
 	display: flex;
 	width: 1000px;
-	margin-top: 20px;
+	margin-top: 25px;
+	margin-bottom: 0;
 }
 
 .book-info {
@@ -45,7 +39,7 @@
 	margin-left: 0;
 }
 
-.book-info h2 {
+.book-info-title h2 {
 	margin-left: 0;
 	color: #425C29;
 	font-size: 32px;
@@ -56,7 +50,7 @@
 	font-size: 18px;
 }
 
-.book-info-header {
+.book-info-title {
 	display: flex;
 	gap: 10px;
 }
@@ -75,19 +69,17 @@
 }
 
 
-
-
 /* 실제 페이지 내용 (그림 + 글)이 들어갈 영역 */
-.book-pages {
+.book-story-image-pages {
 	position: absolute;
 	width: 78%;
-	height: 70%;
-	top: 14%;
+	height: 68%;
+	top: 15%;
 	left: 11%;
 	gap: 5%;
 
 	display: flex;
-	z-index: 1000;
+	z-index: 100;
 }
 
 .book-page {
@@ -97,7 +89,6 @@
 	justify-content: center;
 	align-items: center;
 	padding: 0;
-	/* 페이지 안쪽 여백 */
 	box-sizing: border-box;
 }
 
@@ -106,6 +97,7 @@
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: contain;
+	/* border-radius: 10px; */
 }
 
 .right-page .story-text {
@@ -114,6 +106,59 @@
 	line-height: 1.9;
 	color: #333;
 	white-space: pre-wrap;
-	height: 100%;
 	overflow-y: auto;
+	text-align: left;
 }
+
+
+
+.book-view-wrapper {
+	width: 100%;
+	max-width: 1100px;
+	min-width: 900px;
+	position: relative; /* 자식 요소의 absolute 기준이 됨 */
+  }
+  
+  
+  .bookmark-tab-wrapper {
+	display: flex;
+	position: absolute; 
+	top: -2%;             
+	right: 10%;          
+	z-index: 10;       
+  }
+  
+
+  .bookmark-tab-bar {
+	display: flex;
+	gap: 0;
+	margin-bottom: 0;
+	justify-content: flex-end;
+  } 
+  
+  .bookmark-tab-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #fcfcfc;
+	border: none;
+	padding: 12px 24px 10px;
+	font-size: 16px;
+	font-weight: 500;
+	color: #3c3c3c;
+	border-radius: 15px 15px 0 0;
+	cursor: pointer;
+	width: 120px
+  }
+  
+  .bookmark-tab-button.button-active {
+	background-color: #F3E1BB;
+	font-weight: 700;
+}
+  
+  .bookmark-tab-button:hover {
+	background-color: #a6987e;
+	color: white;
+  }
+  
+ 

@@ -124,7 +124,7 @@
 	margin-right: 0;
 	margin-top: 16px;
 	padding: 12px 40px;
-	background-color: #8DAE6E; /* 기본 색상을 활성화 색상으로 변경 */
+	background-color: #8DAE6E; 
 	color: white;
 	border: none;
 	border-radius: 10px;
@@ -134,12 +134,12 @@
 	transition: background-color 0.2s;
   }
   
-  .submit-btn:hover {
+  .story-category-submit-btn:hover {
 	background-color: #7aad7a;
   }
   
-  .submit-btn:disabled {
+  .story-category-submit-btn:disabled {
 	background-color: #ccc; /* 비활성화 시 회색 */
 	cursor: not-allowed; /* 사용 불가 커서 */
   }
-  
+

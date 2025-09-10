@@ -1,14 +1,24 @@
-import { useSearchParams, Link } from "react-router"
+import { useSearchParams, useLocation, Link } from "react-router"
 import "~/styles/mybook.css";
 
 import MyCharacterView from "~/components/mybookDetail/MyCharacterView";
 import MyStoryView from "~/components/mybookDetail/MyStoryView";
 
 export default function MybookCollection() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams(); // 현재 URL 경로
   const mode = searchParams.get("mode"); // 'mycharacter' 또는 null
 
   const isCharacter = mode === "mycharacter";
+  const isChildMode = searchParams.get("user") === "child";
+
+  // 2. isChildMode 값에 따라 각 링크의 최종 경로를 동적으로 만듭니다.
+  const storyLink = isChildMode
+    ? "/mybook?mode=story&user=child"
+    : "/mybook?mode=story";
+
+  const characterLink = isChildMode
+    ? "/mybook?mode=mycharacter&user=child"
+    : "/mybook?mode=mycharacter";
 
   return (
     <div className="mybook-page">
@@ -17,12 +27,12 @@ export default function MybookCollection() {
       <div className="mybook-tab-wrapper">
 
         <div className="mybook-tab-bar">
-          <Link to="/mybook?mode=story">
+          <Link to={storyLink}>
             <div className={`mybook-tab-button ${!isCharacter ? "button-active" : ""}`}>
               스토리 모음
             </div>
           </Link>
-          <Link to="/mybook?mode=mycharacter">
+          <Link to={characterLink}>
             <div className={`mybook-tab-button ${isCharacter ? "button-active" : ""}`}>
               주인공 모음
             </div>
