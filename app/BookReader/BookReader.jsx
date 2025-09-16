@@ -22,7 +22,19 @@ export default function BookReader() {
 	const mode = searchParams.get("mode"); // 'mycharacter' 또는 null
 
 	const isQuiz = mode === "quiz";
+  const isChildMode = searchParams.get("user") === "child";
 
+  // 2. isChildMode 값에 따라 각 링크의 최종 경로를 동적으로 만듭니다.
+  const readerLink = isChildMode
+    ? "/mybook/bookview?user=child"
+    : "/mybook/bookview";
+
+  const quizLink = isChildMode
+    ? "/mybook/bookview?mode=quiz&user=child"
+    : "/mybook/bookview?mode=quiz";
+
+
+	
 	return (
 		<div className="book-reader-view-layout">
 			<div className="book-info-container">
@@ -38,12 +50,12 @@ export default function BookReader() {
 			<div className="book-view-wrapper">
 				<div className="bookmark-tab-wrapper">
 					<div className="bookmark-tab-bar">
-						<Link to="/mybook/bookview">
+						<Link to= {readerLink}>
 							<div className={`bookmark-tab-button ${!isQuiz ? "button-active" : ""}`}>
 								책 읽기
 							</div>
 						</Link>
-						<Link to="/mybook/bookview?mode=quiz">
+						<Link to= {quizLink}>
 							<div className={`bookmark-tab-button ${isQuiz ? "button-active" : ""}`}>
 								퀴즈
 							</div>

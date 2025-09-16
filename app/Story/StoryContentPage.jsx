@@ -204,7 +204,7 @@ export default function StoryContentPage() {
 					</div>
 
 					<textarea
-						name="storyText" // name을 storyText로 변경
+						name="imageText" 
 						value={pages[currentPageIndex].storyText} // 현재 페이지에 맞는 텍스트를 표시
 						onChange={handleTextChange} // 핸들러 연결
 						placeholder="그림에 대한 설명을 입력해주세요."

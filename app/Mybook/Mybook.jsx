@@ -5,7 +5,7 @@ import MyCharacterView from "~/components/mybookDetail/MyCharacterView";
 import MyStoryView from "~/components/mybookDetail/MyStoryView";
 
 export default function MybookCollection() {
-  const [searchParams, setSearchParams] = useSearchParams(); // 현재 URL 경로
+  const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode"); // 'mycharacter' 또는 null
 
   const isCharacter = mode === "mycharacter";
@@ -13,8 +13,8 @@ export default function MybookCollection() {
 
   // 2. isChildMode 값에 따라 각 링크의 최종 경로를 동적으로 만듭니다.
   const storyLink = isChildMode
-    ? "/mybook?mode=story&user=child"
-    : "/mybook?mode=story";
+    ? "/mybook?user=child"
+    : "/mybook";
 
   const characterLink = isChildMode
     ? "/mybook?mode=mycharacter&user=child"

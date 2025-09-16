@@ -36,7 +36,7 @@ export default function NavHeaderChild() {
 							</NavLink>
 						</li>
 						<li className="nav-item">
-							<NavLink to="/mybook?mode=story&user=child" activeClassName="active" className="link">
+							<NavLink to="/mybook?user=child" activeClassName="active" className="link">
 								<img src="/nav_icon/my_library.png" alt="my_library" />
 								나만의 책장
 							</NavLink>
