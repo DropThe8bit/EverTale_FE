@@ -36,6 +36,8 @@ export default function BookReader() {
 
 	
 	return (
+		<div className="book-layout">
+
 		<div className="book-reader-view-layout">
 			<div className="book-info-container">
 				<div className="book-info">
@@ -67,6 +69,7 @@ export default function BookReader() {
 					{isQuiz ? <QuizView /> : <ReaderView bookData={bookData.pages} />}
 				</div>
 			</div>
+		</div>
 		</div>
 	);
 }

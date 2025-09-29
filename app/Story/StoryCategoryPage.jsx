@@ -4,10 +4,10 @@ import "~/styles/storyCategory.css";
 
 // 카테고리 데이터를 배열로 관리하여 효율성을 높이기
 const CATEGORIES = [
-  { id: 'adventure', name: '모험', imgSrc: '/images/category_adventure.png' },
-  { id: 'friendship', name: '우정', imgSrc: '/images/category_friendship.png' },
-  { id: 'moral', name: '교훈/도덕', imgSrc: '/images/category_moral.png' },
-  { id: 'family', name: '가족/사랑', imgSrc: '/images/category_family.png' },
+  { genre: 'adventure', name: '모험', imgSrc: '/images/category_adventure.png' },
+  { genre: 'friendship', name: '우정', imgSrc: '/images/category_friendship.png' },
+  { genre: 'moral', name: '교훈/도덕', imgSrc: '/images/category_moral.png' },
+  { genre: 'family', name: '가족/사랑', imgSrc: '/images/category_family.png' },
 ];
 
 export default function StoryCategoryPage() {

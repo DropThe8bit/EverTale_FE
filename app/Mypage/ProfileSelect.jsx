@@ -1,55 +1,46 @@
 import React, { useState } from 'react';
-// import ProfileItem from './ProfileItem';
+import { useLoaderData, useNavigate, Form, redirect } from "react-router"; // react-router-dom 사용 가정
+import { getSession, commitSession } from '~/auth/auth.js';
+import { initProfileList, createChildProfile, accessProfileToken } from "~/api/mypage.server";
 import "~/styles/profileSelect.css";
 
-function ProfileItem({ profile, onNameChange }) {
+function ProfileItem({ profile }) {
   return (
     <div className="profile-item">
-      <div className="profile-avatar-wrapper">
-        <img src={profile.image} alt={profile.name || "새 프로필"} className="profile-avatar" />
-      </div>
-      <input
-        type="text"
-        className="profile-name"
-        value={profile.name}
-        onChange={(e) => onNameChange(profile.id, e.target.value)}
-        placeholder="이름 입력"
-      />
+      <Form method="post">
+        <input type="hidden" name="profileId" value={profile.id} />
+        <input type="hidden" name="_action" value="selectProfile" />
+        <button type="submit" className="profile-item-button">
+          <div className="profile-avatar-wrapper">
+            <img src={profile.image} alt={profile.name} className="profile-avatar" />
+          </div>
+          <div className="profile-name">{profile.name}</div>
+        </button>
+      </Form>
     </div>
   );
 }
 
+export default function ProfileSelector() {
+  const initialProfilesFromLoader = useLoaderData() || [];
 
-function ProfileSelector() {
-  const [profiles, setProfiles] = useState([
-    { id: 1, name: '김부모', image: '/images/profile1.png' },
-  ]);
-
-  // 새 프로필에 순환 적용될 이미지 목록
-  const newProfileImages = [
+  const profileImages = [
     '/images/profile1.png',
     '/images/profile2.png',
     '/images/profile3.png',
     '/images/profile4.png',
   ];
-  
-  // 프로필 추가 함수
-  const handleAddProfile = () => {
-    const nextImageIndex = profiles.length % newProfileImages.length;
-    const newProfile = {
-      id: Date.now(),
-      name: '',
-      image: newProfileImages[nextImageIndex], 
-    };
-    setProfiles([...profiles, newProfile]);
-  };
-  
-  // 프로필 이름 변경 함수
-  const handleNameChange = (id, newName) => {
-    setProfiles(profiles.map(p => (p.id === id ? { ...p, name: newName } : p)));
-  };
 
-  // 렌더링 부분
+  // 로더 데이터에 이미지를 매핑하여 초기 상태를 설정합니다.
+  const profiles = initialProfilesFromLoader.map((profile, index) => ({
+    id: profile.profileId,
+    name: profile.name,
+    image: profileImages[index % profileImages.length],
+  }));
+
+  // 새 프로필 추가 UI를 토글하기 위한 상태 
+  const [isAdding, setIsAdding] = useState(false);
+
   return (
     <div className="profile-selector-container">
       <p>EverTale의 세계로 떠날 주인공을 선택해주세요</p>
@@ -59,16 +50,133 @@ function ProfileSelector() {
             <ProfileItem
               key={profile.id}
               profile={profile}
-              onNameChange={handleNameChange}
             />
           ))}
         </div>
-        <button className="add-profile-button" onClick={handleAddProfile}>
-          +
-        </button>
+        {/* isAdding' 상태가 false일 때만 '추가' 버튼 보이기 */}
+        {!isAdding && (
+          <button className="add-profile-button" onClick={() => setIsAdding(true)}>
+            +
+          </button>
+        )}
+      </div>
+      {/* 'isAdding' 상태가 true이면 프로필 추가 폼 렌더링 */}
+      {isAdding && (
+        <AddChildProfileModal onClose={() => setIsAdding(false)} />
+      )}
+    </div>
+  );
+}
+
+function AddChildProfileModal({ onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <Form method="post" className="add-profile-form" onSubmit={onClose}>
+          <h3>새로운 자녀 프로필 추가</h3>
+          <div className="add-profile-item">
+            <p>이름</p>
+            <input type="text" name="name" required />
+          </div>
+          <div className="add-profile-item">
+            <p>생년월일</p>
+            <input type="date" name="birthDate" required />
+          </div>
+          <div className="add-profile-item">
+            <p>소속기관</p>
+            <input type="text" name="institution" placeholder="(예: 새싹 유치원)" required />
+          </div>
+          <div className="form-buttons">
+            <button type="submit">추가하기</button>
+            <button type="button" onClick={onClose}>취소</button>
+          </div>
+        </Form>
       </div>
     </div>
   );
 }
 
-export default ProfileSelector;
+
+
+// 프로필 조회
+export async function loader({ request }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const token = session.get("accessToken");
+  // 토큰이 없는 경우에 대한 처리
+  if (!token) {
+    redirect("/mypage/login");
+    return [];
+  }
+  const profileListResult = await initProfileList(token);
+  console.log(profileListResult.result)
+  if (profileListResult?.isSuccess && profileListResult?.result?.profiles) {
+    return profileListResult.result.profiles;
+  }
+  return [];
+}
+
+
+
+// 자녀 프로필을 추가하고, 각 프로필에 접속하는 함수
+export async function action({ request }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const token = session.get("accessToken");
+
+  if (!token) redirect("/mypage/login");
+
+  const formData = await request.formData();
+  const actionType = formData.get("_action");
+
+  // [프로필 선택] 로직
+  if (actionType === "selectProfile") {
+    const profileId = formData.get("profileId");
+
+    try {
+      const result = await accessProfileToken(profileId, token);
+      if (result.isSuccess) {
+        // 발급받은 새 토큰을 세션에 저장
+        const newChildToken = result.result.accessToken;
+        session.set("childAccessToken", newChildToken);
+        console.log("자녀접속토큰:", result)
+
+        // 부모 <-> 자녀 UI분기
+        if (result.result.profileType == "CHILD") {
+          return redirect("/?user=child", {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
+          });
+        } else {
+          return redirect("/", {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Profile access failed:", error);
+    }
+  }
+  // [자녀 프로필 추가] 로직 
+  else {
+    const name = formData.get("name");
+    const birthDate = formData.get("birthDate");
+    const institution = formData.get("institution");
+
+    if (!name || !birthDate || !institution) {
+      return { error: "이름, 생년월일, 소속기관은 필수입니다." };
+    }
+    const newProfileData = { name, birthDate, institution };
+
+    try {
+      const result = await createChildProfile(token, newProfileData);
+      if (result.isSuccess) {
+        // 프로필 추가 성공 시, 현재 페이지를 새로고침하여 목록을 갱신합니다.
+        return redirect(request.url);
+      }
+    } catch (error) {
+      console.error("Profile creation failed:", error);
+    }
+  }
+}

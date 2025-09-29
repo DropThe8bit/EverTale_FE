@@ -1,9 +1,12 @@
+.book-layout {
+	background-color: #B6CF9F ;
+	height: 100vh;
+	z-index: 0;
+}
 .book-reader-view-layout {
 	width: 100%;
     min-height: calc(100vh - 90px); 
-	
 	margin-top: 90px;
-	background-color: #B6CF9F;
 	display: grid;
 }
 

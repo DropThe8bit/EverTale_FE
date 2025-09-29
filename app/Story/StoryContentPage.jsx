@@ -22,7 +22,7 @@ function EditNextStoryModal({ currentText, onClose, onSave }) {
 					className="story-edit-modal-textarea"
 					value={editedText}
 					onChange={(e) => setEditedText(e.target.value)}
-				/>,
+				/>
 				<div className="modal-buttons">
 					<button onClick={onClose} className="cancel-btn">취소</button>
 					<button onClick={handleSave} className="confirm-btn">줄거리 생성하기</button>

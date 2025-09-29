@@ -5,7 +5,7 @@ export default function NavHeaderChild() {
 	const location = useLocation();
 
 	const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
-  params.set("user", "child");
+	params.set("user", "child");
 
 	// console.log("start")
 	return (
@@ -30,7 +30,7 @@ export default function NavHeaderChild() {
 							</NavLink>
 						</li>
 						<li className="nav-item">
-							<NavLink to="/story?user=child" activeClassName="active" className="link">
+							<NavLink to="/story/:storyId?user=child" activeClassName="active" className="link">
 								<img src="/nav_icon/story_making.png" alt="story_making" />
 								스토리 만들기
 							</NavLink>

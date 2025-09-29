@@ -4,3 +4,6 @@
 # React Router
 /.react-router/
 /build/
+
+# 환경 변수 파일
+.env

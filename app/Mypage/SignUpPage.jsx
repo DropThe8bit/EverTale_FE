@@ -1,37 +1,57 @@
-
-import { redirect, Form, useActionData, Link } from "react-router";
 import "~/styles/signup.css";
+import { Form, useActionData, Link, redirect } from "react-router";
+import { getSession, commitSession } from '~/auth/auth.js';
+import { signUpUser, createParentProfile, loginUser } from "~/api/mypage.server";
 
-import { signUpUser } from "~/data/mypage.server";
-
+//  회원가입부터 프로필 생성까지 모든 과정을 처리하는 단일 action 함수
 export async function action({ request }) {
   const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const username = formData.get("username");
-  const phone = formData.get("phone");
-  const department = formData.get("department");
+  const userData = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    username: formData.get("username"),
+    phone: formData.get("phone"),
+    department: formData.get("department"),
+  };
 
+  try {
+    // 회원가입
+    const signUpResult = await signUpUser(userData);
+    if (!signUpResult?.isSuccess) {
+      throw new Error(signUpResult?.message || '회원가입에 실패했습니다.');
+    }
 
-  // 간단한 유효성 검사
-  if (!email || !password) {
-    return { error: "이메일과 비밀번호를 모두 입력해주세요." };
-  }
+    // 자동 로그인
+    const loginResult = await loginUser({ email: userData.email, password: userData.password });
+    if (!loginResult?.isSuccess || !loginResult?.result?.accessToken) {
+      return redirect('/mypage/login?status=signup_success');
+    }
+    const token = loginResult.result.accessToken;
 
-  const result = await signUpUser({ email, password, username, phone, department });
+    // 프로필 생성 
+    const profileResult = await createParentProfile(token);
+    if (!profileResult.isSuccess) {
+        // '이미 존재'가 아닌 다른 심각한 에러일 경우
+        throw new Error(profileResult.message || '프로필 생성 중 오류 발생');
+    }
 
-  // API 요청 결과에 따라 처리
-  if (result.success) {
-    // 성공 시 로그인 페이지나 대시보드로 리다이렉트
-    return redirect("/login");
-  } else {
-    // 실패 시 에러 메시지를 UI로 다시 전달
-    return { error: result.message };
+    // 세션 저장 및 페이지 전환
+    const session = await getSession(request.headers.get("Cookie"));
+    session.set("accessToken", token);
+
+    return redirect('/mypage/login', {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+
+  } catch (error) {
+    return { error: error.message };
   }
 }
 
+
 export default function SignUpPage() {
-  // action에서 반환된 데이터 (에러 메시지 등)
   const actionData = useActionData();
 
   return (
@@ -40,7 +60,6 @@ export default function SignUpPage() {
       <div className="signup-guide-mention"><span className="req">*</span>필수 입력 사항</div>
       <div className="signup-separator"></div>
 
-      {/* Remix의 Form 컴포넌트를 사용하면 자동으로 action 함수에 POST 요청을 보냅니다. */}
       <Form method="post">
         <div className="signup-group">
           <div className="signup-input">
@@ -90,13 +109,12 @@ export default function SignUpPage() {
           <button className="signup-submit" type="submit">회원가입 완료</button>
         
         </div>
-        <Link to="/mypage/auth/login">
+        <Link to="/mypage/login">
             <div className="back-login-button">
               <p>로그인 화면으로</p>
             </div>
           </Link>
       </Form>
-
     </div>
   );
 }
