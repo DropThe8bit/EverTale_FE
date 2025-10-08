@@ -91,7 +91,6 @@ textarea {
 .checkbox-wrapper,
 .radio-wrapper {
 	display: flex;
-	/* Flexbox 활성화 */
 	align-items: center;
 	/* 내부 항목(버튼, 라벨) 세로 중앙 정렬 */
 	justify-content: center;
@@ -105,17 +104,16 @@ textarea {
 .radio-wrapper label {
 	cursor: pointer;
 	margin: 0;
-	/* 불필요한 스타일 제거로 단순화 */
 	width: 80px;
 	font-size: 18px;
 	font-weight: 400;
 }
 
-/* '여자', '남자', '기타'를 모두 감싸는 그룹 */
+/* gender를 모두 감싸는 그룹 */
 .radio-group {
 	display: flex;
 	justify-content: flex-start;
-	/* 그룹 내 아이템들을 왼쪽부터 정렬 (아래 설명 참고) */
+	/* 그룹 내 아이템들을 왼쪽부터 정렬 */
 	gap: 20px;
 	margin: 0;
 	flex: 1;
@@ -203,27 +201,82 @@ textarea {
 }
 
 
-
 /* 제출 버튼 기본 스타일 (비활성화 상태) */
 .story-character-submit-btn {
 	margin-right: 0;
-  padding: 10px 20px;
-  background-color: #ccc; 
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-	transition: background-color 0.2s ease; 
+	padding: 10px 20px;
+	background-color: #ccc;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: bold;
+	transition: background-color 0.2s ease;
 }
 
 /* 모든 항목이 채워졌을 때 적용될 활성화 스타일 */
 .story-character-submit-btn.active {
-  background-color: #8DAE6E; 
+	background-color: #8DAE6E;
 }
 
 .story-character-submit-btn.active:hover {
-  background-color: rgb(135, 171, 135);
-	cursor: pointer; /* 커서를 포인터로 변경 */
+	background-color: rgb(135, 171, 135);
+	cursor: pointer;
+	/* 커서를 포인터로 변경 */
+}
 
+.modal-overlay {
+	position: fixed;
+	/* 화면 전체에 고정 */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	/* 반투명 검은색 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background-color: white;
+	padding: 2rem 2.5rem;
+	/* 내부 여백 */
+	border-radius: 12px;
+	/* 모서리 둥글게 */
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+	/* 입체감을 주는 그림자 */
+	width: 90%;
+	max-width: 450px;
+}
+
+.result-character-image {
+	width: 350px;
+	height: 350px;
+	border-radius: 12px;
+	object-fit: cover;
+	margin: 16px 0;
+}
+
+/* 폼 버튼 공통 스타일 */
+.form-buttons button {
+	width: 160px;
+	font-size: 1rem;
+	font-weight: bold;
+	padding: 10px 20px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: opacity 0.2s;
+	margin: 10px;
+	background-color: #f1f3f5;
+	color: #555;
+	border: 1px solid #ddd;
+
+}
+
+.form-buttons button:hover {
+	background-color: #8DAE6E;
+	color: white;
 }

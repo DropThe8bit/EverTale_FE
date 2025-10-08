@@ -143,3 +143,60 @@
 	cursor: not-allowed; /* 사용 불가 커서 */
   }
 
+
+
+.modal-overlay {
+	position: fixed;
+	/* 화면 전체에 고정 */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	/* 반투명 검은색 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background-color: white;
+	padding: 2rem 2.5rem;
+	/* 내부 여백 */
+	border-radius: 12px;
+	/* 모서리 둥글게 */
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+	/* 입체감을 주는 그림자 */
+	width: 90%;
+	max-width: 450px;
+}
+
+.result-character-image {
+	width: 350px;
+	height: 350px;
+	border-radius: 12px;
+	object-fit: cover;
+	margin: 16px 0;
+}
+
+/* 폼 버튼 공통 스타일 */
+.form-buttons button {
+	width: 160px;
+	font-size: 1rem;
+	font-weight: bold;
+	padding: 10px 20px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: opacity 0.2s;
+	margin: 10px;
+	background-color: #f1f3f5;
+	color: #555;
+	border: 1px solid #ddd;
+
+}
+
+.form-buttons button:hover {
+	background-color: #8DAE6E;
+	color: white;
+}

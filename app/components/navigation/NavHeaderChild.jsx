@@ -30,7 +30,7 @@ export default function NavHeaderChild() {
 							</NavLink>
 						</li>
 						<li className="nav-item">
-							<NavLink to="/story/:storyId?user=child" activeClassName="active" className="link">
+							<NavLink to="/story?user=child" activeClassName="active" className="link">
 								<img src="/nav_icon/story_making.png" alt="story_making" />
 								스토리 만들기
 							</NavLink>
@@ -42,7 +42,7 @@ export default function NavHeaderChild() {
 							</NavLink>
 						</li>
 						<li className="nav-item">
-							<NavLink to="/mypage?user=child" activeClassName="active" className="link">
+							<NavLink to="/mypage?user=child" className="link">
 								<img src="/nav_icon/mypage.png" alt="mypage" />
 								마이페이지
 							</NavLink>

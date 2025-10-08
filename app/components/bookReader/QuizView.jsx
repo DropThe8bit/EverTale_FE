@@ -10,7 +10,7 @@ const bookData = {
 		}
 	]
 };
-export default function MyStroyView() {
+export default function QuizView() {
   const currentPage = bookData.pages[0];
 
   return (

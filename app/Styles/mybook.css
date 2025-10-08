@@ -79,16 +79,17 @@
   border-radius: 16px;
   width: 100%;
   min-width: 190px;
-  /* 카드 크기 고정 */
-  max-width: 210px;
+  max-width: 200px;
+  min-height: 230px; 
+  max-height: 240px;
   margin: 0 auto;
   transition: transform 0.2s ease;
 }
 
 /* 책 이미지 */
 .mybook-card img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   display: block;
   border-radius: 16px;
 }

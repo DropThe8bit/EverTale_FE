@@ -1,14 +1,57 @@
 .book-layout {
-	background-color: #B6CF9F ;
+	background-color: #B6CF9F;
 	height: 100vh;
 	z-index: 0;
 }
+
 .book-reader-view-layout {
 	width: 100%;
-    min-height: calc(100vh - 90px); 
+	min-height: calc(100vh - 90px);
 	margin-top: 90px;
 	display: grid;
 }
+
+.main-reader-wrapper {
+	position: relative;
+	/* 화살표 버튼 위치의 기준점이 됩니다. */
+	display: flex;
+	justify-content: center;
+	/* 책을 중앙에 배치 */
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.nav-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: rgba(0, 0, 0, 0.3);
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	font-size: 24px;
+	cursor: pointer;
+	z-index: 10;
+}
+
+.prev-arrow {
+	left: 10px;
+	/* wrapper의 왼쪽 끝에서 10px */
+}
+
+.next-arrow {
+	right: 10px;
+	/* wrapper의 오른쪽 끝에서 10px */
+}
+
+.nav-arrow:disabled {
+	opacity: 0.2;
+	cursor: not-allowed;
+}
+
 
 /* 책 배경 이미지를 포함하는 컨테이너 */
 .book-cover-container {
@@ -42,12 +85,6 @@
 	margin-left: 0;
 }
 
-.book-info-title h2 {
-	margin-left: 0;
-	color: #425C29;
-	font-size: 32px;
-}
-
 .book-info p {
 	color: #425C29;
 	font-size: 18px;
@@ -55,7 +92,15 @@
 
 .book-info-title {
 	display: flex;
-	gap: 10px;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.book-info-title h2 {
+	margin: 0;
+	color: #425C29;
+	font-size: 32px;
+	white-space: nowrap;
 }
 
 .book-reader-voice-button {
@@ -63,14 +108,17 @@
 	color: #425C29;
 	border: none;
 	border-radius: 20px;
-	width: 100px;
+	padding: 0 16px;
+	/* 너비 대신 padding으로 좌우 여백을 줍니다. */
+	margin-left: 20px;
 	height: 30px;
 	font-size: 16px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
+	/* (선택사항) 버튼 크기가 변하지 않도록 설정 */
+	flex-shrink: 0;
 }
-
 
 /* 실제 페이지 내용 (그림 + 글)이 들어갈 영역 */
 .book-story-image-pages {
@@ -80,7 +128,6 @@
 	top: 15%;
 	left: 11%;
 	gap: 5%;
-
 	display: flex;
 	z-index: 100;
 }
@@ -96,15 +143,19 @@
 }
 
 .left-page img {
-	width: 300px;
+	width: 100%;
 	max-width: 100%;
-	max-height: 100%;
+	max-height: 95%;
 	object-fit: contain;
-	/* border-radius: 10px; */
+	border-radius: 10px;
+	padding-left: 30px;
+	padding-right: 20px;
 }
 
 .right-page .story-text {
-	width: 300px;
+	width: 100%;
+	padding-left: 30px;
+	padding-right: 35px;
 	font-size: 16px;
 	line-height: 1.9;
 	color: #333;
@@ -113,33 +164,46 @@
 	text-align: left;
 }
 
+.story-conetent-page-number {
+	color: #666;
+	font-size: 14px;
+	position: absolute;
+	bottom: 0;
+	/* left: 0; right: 0; 으로 너비를 100% 만들기 */
+	left: 0;
+	right: 0;
+	padding: 0 40px;
+	text-align: right;
+
+}
 
 
 .book-view-wrapper {
 	width: 100%;
 	max-width: 1100px;
 	min-width: 900px;
-	position: relative; /* 자식 요소의 absolute 기준이 됨 */
-  }
-  
-  
-  .bookmark-tab-wrapper {
-	display: flex;
-	position: absolute; 
-	top: -2%;             
-	right: 10%;          
-	z-index: 10;       
-  }
-  
+	position: relative;
+	/* 자식 요소의 absolute 기준이 됨 */
+}
 
-  .bookmark-tab-bar {
+
+.bookmark-tab-wrapper {
+	display: flex;
+	position: absolute;
+	top: -2%;
+	right: 10%;
+	z-index: 10;
+}
+
+
+.bookmark-tab-bar {
 	display: flex;
 	gap: 0;
 	margin-bottom: 0;
 	justify-content: flex-end;
-  } 
-  
-  .bookmark-tab-button {
+}
+
+.bookmark-tab-button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -152,16 +216,103 @@
 	border-radius: 15px 15px 0 0;
 	cursor: pointer;
 	width: 120px
-  }
-  
-  .bookmark-tab-button.button-active {
+}
+
+.bookmark-tab-button.button-active {
 	background-color: #F3E1BB;
 	font-weight: 700;
 }
-  
-  .bookmark-tab-button:hover {
+
+.bookmark-tab-button:hover {
 	background-color: #a6987e;
 	color: white;
-  }
-  
- 
+}
+
+/* 전체 컨테이너: 버튼과 드롭다운 메뉴의 위치 기준점이 됩니다. */
+.voice-selector-container {
+	position: relative;
+	display: inline-block;
+	width: 180px;
+	min-width: 180px;
+}
+
+/* 기존 버튼 스타일 */
+.book-reader-voice-button {
+	background-color: #fcfcfc;
+	color: #425C29;
+	border: 1px solid #eee;
+	border-radius: 20px;
+	padding: 0 15px;
+	min-width: 100px;
+	height: 35px;
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+		margin-left: 10px;
+
+}
+
+/* 드롭다운 메뉴: 버튼 아래에 뜨는 메뉴 */
+.voice-dropdown-menu {
+	position: absolute;
+	top: 100%;
+	/* 버튼 바로 아래에 위치 */
+	left: 0;
+	background-color: white;
+	border: 1px solid #eee;
+	border-radius: 8px;
+	box-shadow: 10px 5px 10px 0 rgba(0, 0, 0, 0.25);
+	width: 100%;
+	margin-top: 5px;
+	z-index: 1000;
+}
+
+.voice-dropdown-menu p {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 500;
+	margin: 10px 15px;
+}
+
+.voice-dropdown-separator {
+  height: 1px;
+  background-color: var(--color-primary-10);
+	margin: 0 10px;
+}
+
+.voice-dropdown-item {
+	padding: 10px 15px;
+	cursor: pointer;
+	font-size: 15px;
+}
+
+.voice-dropdown-item:hover {
+	background-color: #f5f5f5;
+}
+
+.add-voice-section {
+	padding: 10px;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.add-voice-button {
+	width: 80%;
+	padding: 10px;
+	border: 1px solid #8e8e8e;
+	border-radius: 25px;
+	background-color: white;
+	cursor: pointer;
+	font-size: 14px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.add-voice-button:hover {
+	background-color: #f9f9f9;
+}
+
+/* 기존 목소리 목록을 감싸는 div (선택사항) */
+.voice-list {
+	/* 필요하다면 스타일 추가 */
+}

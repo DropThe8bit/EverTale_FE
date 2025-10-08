@@ -3,7 +3,7 @@ import { redirect, Form, useActionData, Link, useNavigate } from "react-router";
 import { useEffect } from "react";
 import "~/styles/login.css";
 
-import { getSession, commitSession } from '~/auth/auth.js';
+import { getSession, commitSession, destroySession } from '~/auth/auth.js';
 import { loginUser } from "~/api/mypage.server";
 
 export async function action({ request }) {
@@ -16,17 +16,22 @@ export async function action({ request }) {
     return { error: "이메일과 비밀번호를 모두 입력해주세요." };
   }
   const result = await loginUser({ email, password });
-  // console.log(result)
+  console.log(result)
 
   if (result?.isSuccess && result?.result?.accessToken) {
     const accessToken = result.result.accessToken;
-    const session = await getSession(request.headers.get("Cookie"));
-    session.set("accessToken", accessToken);
-    console.log("세션에 저장될 토큰:", session.get("accessToken"));
+
+    // 기존 세션 초기화 + 새로 발급 받은 세션 저장 및 페이지 전환
+    const oldSession = await getSession(request.headers.get("Cookie"));
+    await destroySession(oldSession);
+
+    const newSession = await getSession();
+    newSession.set("accessToken", accessToken);
+    console.log("세션에 저장될 토큰:", newSession.get("accessToken"));
 
     return redirect('/mypage/profile', {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        "Set-Cookie": await commitSession(newSession),
       },
     });
   } else {
@@ -35,9 +40,10 @@ export async function action({ request }) {
 }
 
 
+
 export default function LoginPage() {
   const actionData = useActionData();
-  
+
   return (
     <div className="login-container">
       <p>로그인</p>

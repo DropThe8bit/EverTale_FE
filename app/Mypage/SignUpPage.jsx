@@ -1,6 +1,6 @@
 import "~/styles/signup.css";
 import { Form, useActionData, Link, redirect } from "react-router";
-import { getSession, commitSession } from '~/auth/auth.js';
+import { getSession, commitSession, destroySession } from '~/auth/auth.js';
 import { signUpUser, createParentProfile, loginUser } from "~/api/mypage.server";
 
 //  회원가입부터 프로필 생성까지 모든 과정을 처리하는 단일 action 함수
@@ -35,10 +35,15 @@ export async function action({ request }) {
         throw new Error(profileResult.message || '프로필 생성 중 오류 발생');
     }
 
-    // 세션 저장 및 페이지 전환
-    const session = await getSession(request.headers.get("Cookie"));
-    session.set("accessToken", token);
+    // 기존 세션 초기화 + 새로 발급 받은 세션 저장 및 페이지 전환
+    const oldSession = await getSession(request.headers.get("Cookie"));
+    await destroySession(oldSession);
 
+    const newSession = await getSession(request.headers.get("Cookie"));
+    newSession.set("accessToken", token);
+
+
+  
     return redirect('/mypage/login', {
       headers: {
         "Set-Cookie": await commitSession(session),

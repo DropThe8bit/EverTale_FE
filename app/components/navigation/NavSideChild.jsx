@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet } from "react-router"
+import { Form, Link, NavLink, Outlet } from "react-router"
 import "~/styles/navSide.css";
 
 export default function NavSide() {
@@ -12,9 +12,11 @@ export default function NavSide() {
 				</div>
 
 				<div className="navside-bottom">
-					<Link to="/logout" className="navside-icon-button">
-						<span>로그아웃</span>
-					</Link>
+					<Form action="/logout" method="post">
+						<button type="submit" className="logout-button">
+							로그아웃
+						</button>
+					</Form>
 					<Link to="/withdraw" className="navside-icon-button">
 						<span>프로필 삭제</span>
 					</Link>

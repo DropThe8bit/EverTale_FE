@@ -69,14 +69,11 @@ export async function createParentProfile(token) {
       return await response.json();
     }
     
-    // '이미 존재한다'는 에러(HTTP 409 Conflict)가 발생한 경우
     if (response.status === 409) {
       console.log("프로필이 이미 존재하므로, 생성을 건너뛰고 성공으로 처리합니다.");
-      // 실패가 아니므로, 성공과 동일한 형태로 반환해줍니다.
       return { isSuccess: true, message: "프로필이 이미 존재합니다." };
     }
 
-    // 그 외의 모든 경우는 실제 실패로 간주
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
 
@@ -86,10 +83,11 @@ export async function createParentProfile(token) {
   }
 }
 
+
 export async function initProfileList(token) {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/profiles`, 
+      `${API_BASE_URL}/api/profiles/all`, 
       {
         method: 'GET',
         headers: {
@@ -111,6 +109,7 @@ export async function initProfileList(token) {
     return null;
   }
 }
+
 
 export async function createChildProfile(token, newProfileData) {
   try {
@@ -171,6 +170,30 @@ export async function accessMyProfileInfo(token) {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to sign up:", error);
+    return null;
+  }
+}
+
+export async function logoutUser(childAccessToken) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/logout`,  
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${childAccessToken}`
         },
       }
     );

@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { Form, redirect, useActionData, useLocation, useNavigate, useNavigation, useParams, useSearchParams } from 'react-router';
+import { createInitStory } from '~/api/story.server';
+import { getSession, commitSession } from '~/auth/auth';
 import "~/styles/storyCategory.css";
 
 // 카테고리 데이터를 배열로 관리하여 효율성을 높이기
 const CATEGORIES = [
-  { genre: 'adventure', name: '모험', imgSrc: '/images/category_adventure.png' },
-  { genre: 'friendship', name: '우정', imgSrc: '/images/category_friendship.png' },
-  { genre: 'moral', name: '교훈/도덕', imgSrc: '/images/category_moral.png' },
-  { genre: 'family', name: '가족/사랑', imgSrc: '/images/category_family.png' },
+  { id: 1, genre: "ADVENTURE", name: '모험', imgSrc: '/images/category_adventure.png' },
+  { id: 2, genre: "FRIENDSHIP", name: '우정', imgSrc: '/images/category_friendship.png' },
+  { id: 3, genre: "MORAL", name: '교훈/도덕', imgSrc: '/images/category_moral.png' },
+  { id: 4, genre: "FAMILY", name: '가족/사랑', imgSrc: '/images/category_family.png' },
 ];
 
 export default function StoryCategoryPage() {
   const location = useLocation();
-  const navigate = useNavigate(); 
-  const characterData = location.state?.character;
+  const navigate = useNavigate();
+  // const characterData = location.state?.character;
 
   // 선택된 카테고리, 첫 장면, 제작 모드를 관리할 state 추가
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -22,88 +24,53 @@ export default function StoryCategoryPage() {
   const isFormValid = selectedCategory && firstScene.trim() !== '';
 
   // 카테고리 선택을 처리하는 핸들러
-  const handleCategoryClick = (categoryName) => {
-    setSelectedCategory(categoryName);
+  const handleCategoryClick = (categoryGenre) => {
+    setSelectedCategory(categoryGenre);
   };
 
-  // 모든 데이터를 취합하여 백엔드로 전송하는 핸들러
-  const handleSubmit = async () => {
-    // 유효성 검사: 카테고리와 첫 장면이 모두 입력되었는지 확인
-    if (!selectedCategory || !firstScene.trim()) {
-      return;
+  const [searchParams] = useSearchParams();
+  const [characterName, setCharacterName] = useState("");
+
+  useEffect(() => {
+    // 페이지가 브라우저에 로드된 후에 이 코드가 실행됩니다.
+    const name = searchParams.get('char');
+    if (name) {
+      setCharacterName(name);
     }
+  }, [searchParams]); // searchParams가 변경될 때마다 실행
 
-    // 백엔드로 보낼 전체 데이터 객체 생성
-    const storyData = {
-      character: characterData,
-      category: selectedCategory,
-      firstScene: firstScene,
-      // mode: generationMode,
-    };
-
-    console.log('백엔드로 전송할 데이터:', storyData);
-
-    try {
-      // fetch API를 사용하여 백엔드 서버에 POST 요청
-      // '/api/create-story'는 실제 백엔드 API 주소로 변경하기
-      const response = await fetch('/api/create-story', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(storyData),
-      });
-
-      // if (!response.ok) {
-      //   throw new Error('서버 응답에 문제가 발생했습니다.');
-      // }
-
-      // const result = await response.json(); // 백엔드로부터 받은 결과
-      // console.log('서버로부터 받은 응답:', result);
-
-      alert('멋진 이야기가 곧 시작됩니다!');
-      // 성공 시 결과 페이지 등으로 이동할 수 있습니다.
-      // navigate('/story/content', { state: { story: result } });
-			navigate('/story/content/1');
-
-
-    } catch (error) {
-      console.error('스토리 생성 중 오류 발생:', error);
-      alert('스토리 생성에 실패했습니다. 다시 시도해주세요.');
-    }
-  };
-
-  if (!characterData) {
-    return <div>캐릭터 정보가 없습니다. 캐릭터를 먼저 생성해주세요.</div>;
-  }
+  const navigation = useNavigation();
+  const isLoading = navigation.state === 'submitting';
 
   return (
     <div className="story-category-container">
-      <p>{characterData.name}(이)와 어떤 신나는 이야기를 만들어볼까?</p>
+      <p>{characterName}(이)와 어떤 신나는 이야기를 만들어볼까?</p>
       <div className='story-category-separator'></div>
-
-      <div className="story-category-group">
-        {CATEGORIES.map((category) => (
-          <div
-            key={category.id}
-            className={`story-category-item ${selectedCategory === category.name ? 'selected' : ''}`}
-            onClick={() => handleCategoryClick(category.name)}
-          >
-            <div className="story-category-image-wrapper">
-              <img src={category.imgSrc} alt={category.name} />
+      <Form method="post">
+        <div className="story-category-group">
+          {CATEGORIES.map((category) => (
+            <div
+              key={category.id}
+              className={`story-category-item ${selectedCategory === category.genre ? 'selected' : ''}`}
+              onClick={() => handleCategoryClick(category.genre)}
+            >
+              <div className="story-category-image-wrapper">
+                <img src={category.imgSrc} alt={category.name} />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+        <input type="hidden" name="genre" value={selectedCategory} />
 
-      <textarea
-        value={firstScene}
-        onChange={(e) => setFirstScene(e.target.value)}
-        placeholder="첫 장면에 대해서 설명해주세요. ex) 용이 몬스터를 향해 불을 내뿜고 있다."
-      />
+        <textarea
+          name="worldView"
+          value={firstScene}
+          onChange={(e) => setFirstScene(e.target.value)}
+          placeholder="첫 장면이나 세계관에 대해서 설명해주세요. ex) 용이 몬스터를 향해 불을 내뿜고 있다."
+        />
 
-      {/* 이거 달리 삭제였던가..? */}
-      {/* <div className="generation-mode-selector">
+        {/* 이거 달리 삭제였던가..? */}
+        {/* <div className="generation-mode-selector">
         <button
           className={`mode-btn ${generationMode === 'textOnly' ? 'active' : ''}`}
           onClick={() => setGenerationMode('textOnly')}
@@ -118,15 +85,77 @@ export default function StoryCategoryPage() {
         </button>
       </div> */}
 
-      {/* isFormValid 값에 따라 disabled 상태와 active 클래스가 결정됩니다. */}
-      <button
-        className={`story-category-submit-btn ${isFormValid ? 'active' : ''}`}
-        onClick={handleSubmit}
-        disabled={!isFormValid}
-      >
-        이야기 만들기
-      </button>
+        {/* isFormValid 값에 따라 disabled 상태와 active 클래스가 결정됩니다. */}
+        <button
+          type="submit"
+          className={`story-category-submit-btn ${isFormValid ? 'active' : ''}`}
+          disabled={!isFormValid}
+        >
+          이야기 만들기
+        </button>
+      </Form>
+      {isLoading && (
+        <StoryPreviewModal
+          isLoading={isLoading}
+          onClose={() => window.location.reload()} // '다시 만들기'는 페이지 새로고침
+        />
+      )}
     </div>
-
   );
 }
+
+
+
+
+function StoryPreviewModal({ onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ textAlign: 'center', padding: '2rem' }}>
+        <h3>줄거리 생성 중...</h3>
+        <div className="spinner"></div>
+        <p style={{ marginTop: '16px', marginBottom: '16px', fontSize: '16px' }}>흥미로운 줄거리를 만들고 있어요!<br /> </p>
+        <div className="form-buttons">
+          <button type="button" onClick={onClose}>취소</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export async function action({ request, params }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const token = session.get("childAccessToken");
+  if (!token) {
+    return redirect(`/mypage/login`);
+  }
+
+  const storyId = parseInt(params.storyId, 10);
+  const formData = await request.formData();
+  const genre = formData.get("genre");
+  const worldView = formData.get("worldView");
+
+  if (!genre || !worldView) {
+    return json({ error: "장르와 첫 장면을 모두 입력해주세요." }, { status: 400 });
+  }
+
+  const initStoryData = {
+    genre: genre,
+    worldView: worldView,
+  };
+
+  const result = await createInitStory(token, storyId, initStoryData);
+
+  if (result?.isSuccess) {
+    session.flash("StoryResult", result.result);
+    console.log(result.result)
+
+    return redirect(`/story/${storyId}/1`, {
+      headers: { "Set-Cookie": await commitSession(session) },
+    });
+  } else {
+    // 실패 시에는 현재 페이지에 에러 메시지를 전달합니다.
+    return { error: result?.message || "초기 줄거리 생성에 실패했습니다." };
+  }
+}
+
