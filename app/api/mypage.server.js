@@ -111,6 +111,33 @@ export async function initProfileList(token) {
 }
 
 
+export async function childProfileList(token) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/profiles/child`, 
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to sign up:", error);
+    return null;
+  }
+}
+
+
 export async function createChildProfile(token, newProfileData) {
   try {
     const response = await fetch(
@@ -190,6 +217,30 @@ export async function logoutUser(childAccessToken) {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/auth/logout`,  
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${childAccessToken}`
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to sign up:", error);
+    return null;
+  }
+}
+
+export async function profileLogoutUser(childAccessToken) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/profiles/logout`,  
       {
         method: 'POST',
         headers: {

@@ -88,8 +88,8 @@ function AddChildProfileModal({ onClose }) {
             <input type="text" name="institution" placeholder="(예: 새싹 유치원)" required />
           </div>
           <div className="form-buttons">
-            <button type="submit">추가하기</button>
             <button type="button" onClick={onClose}>취소</button>
+            <button type="submit">추가하기</button>
           </div>
         </Form>
       </div>
@@ -109,7 +109,7 @@ export async function loader({ request }) {
     return [];
   }
   const profileListResult = await initProfileList(token);
-  console.log(profileListResult.result)
+  // console.log(profileListResult.result)
   if (profileListResult?.isSuccess && profileListResult?.result?.profiles) {
     return profileListResult.result.profiles;
   }
@@ -132,7 +132,6 @@ export async function action({ request }) {
   if (actionType === "selectProfile") {
     const profileId = formData.get("profileId");
     const profileName = formData.get("profileName");
-    // console.log("그외 세션 저장:", profileId, profileName)
 
     try {
       const result = await accessProfileToken(profileId, token);
@@ -140,20 +139,19 @@ export async function action({ request }) {
         // 발급받은 새 토큰을 세션에 저장
         const newChildToken = result.result.accessToken;
         session.set("childAccessToken", newChildToken);
-        session.set("profileId", profileId);
-        session.set("username", profileName);
-
         console.log("자녀접속토큰:", result)
-        
+
         // 부모 <-> 자녀 UI분기
         if (result.result.profileType == "CHILD") {
-          session.set("profileName", profileName);
+          session.set("profileId", profileId);
+          session.set("username", profileName);
           return redirect("/?user=child", {
             headers: {
               "Set-Cookie": await commitSession(session),
             },
           });
         } else {
+          session.set("myName", profileName);
           return redirect("/mypage/childselect", {
             headers: {
               "Set-Cookie": await commitSession(session),

@@ -1,8 +1,8 @@
 import { Link, NavLink, Outlet } from "react-router"
 import "~/styles/navHeader.css";
 
-export default function NavHeader() {
-  // console.log("start")
+export default function NavHeader(props) {
+  const myName = props.myName || "로그인 | 회원가입";
   return (
     <>
       <header className="nav-bar">
@@ -12,7 +12,7 @@ export default function NavHeader() {
               <img src="/images/logo.png" alt="EverTale logo" />
             </Link>
             <div className="nav-profile">
-              <span>로그인 | 회원가입</span>
+              <span>{myName}</span>
               <img src="/nav_icon/profile.png" alt="profile" />
             </div>
           </li>

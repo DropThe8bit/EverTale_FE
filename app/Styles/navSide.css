@@ -1,7 +1,7 @@
 .navside-bar {
   position: fixed;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   width: 240px;
   height: 100vh;
   background-color: #B3CE9A;
@@ -19,7 +19,7 @@
   align-items: center;
   width: 100%;
   text-decoration: none;
-  gap:16px;
+  gap: 16px;
 }
 
 .navside-mypage {
@@ -43,6 +43,8 @@
   padding-bottom: 12px;
   text-align: right;
   width: 100%;
+  position: relative;
+
 }
 
 .navside-item:hover {
@@ -64,11 +66,16 @@
   text-align: right;
 }
 
-.navside-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 40px;
+.navside-item img {
+  position: absolute;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  left: 20px; /* 예시 값 */
+  top: 50%;
+  transform: translateY(-50%); /* 세로 중앙 정렬 */
+
 }
 
 .navside-text-button {
@@ -79,4 +86,61 @@
 
 .navside-text-button:hover {
   text-decoration: underline;
+}
+
+.navside-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+  width: 100%;
+  margin-left: 50px;
+  padding-left: 0;
+}
+
+.navside-bottom form {
+  margin: 0;
+  padding: 0;
+}
+
+.navside-icon-button,
+.navside-icon-logout-button,
+.navside-icon-profile-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding-left: 0px;
+  box-sizing: border-box;
+}
+
+.navside-icon-profile-button img {
+  width: 32px;
+  height: 25px;
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+.navside-icon-logout-button img {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  margin-left: 7px;
+}
+
+.navside-icon-button img {
+  width: 28px;
+  height: 24px;
+  margin-right: 10px;
+  margin-left: 2px;
+}
+
+.navside-icon-button:hover,
+.navside-icon-logout-button:hover,
+.navside-icon-profile-button:hover {
+  opacity: 0.7;
 }

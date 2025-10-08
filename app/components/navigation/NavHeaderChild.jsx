@@ -1,11 +1,11 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router"
 import "~/styles/navHeader.css";
 
-export default function NavHeaderChild() {
+export default function NavHeaderChild(props) {
 	const location = useLocation();
-
 	const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
 	params.set("user", "child");
+  const { username } = props;
 
 	// console.log("start")
 	return (
@@ -17,7 +17,7 @@ export default function NavHeaderChild() {
 							<img src="/images/logo.png" alt="EverTale logo" />
 						</Link>
 						<div className="nav-profile">
-							<span>로그인 | 회원가입</span>
+							<span>{username}</span>
 							<img src="/nav_icon/profile.png" alt="profile" />
 						</div>
 					</li>

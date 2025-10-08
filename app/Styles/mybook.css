@@ -39,12 +39,24 @@
   color: #3c3c3c;
   border-radius: 15px 15px 0 0;
   cursor: pointer;
+  position: relative;
 }
 
 .mybook-tab-button.button-active {
   background-color: var(--color-primary-10);
   font-weight: 700;
   color: white;
+}
+
+.mybook-tab-button.button-active img {
+  position: absolute;
+  z-index: 10;
+  width: 32px;
+  height: 40px;
+  margin-right: 10px;
+  left: 45px; /* 예시 값 */
+  top: -25%;
+  transform: translateY(-50%); /* 세로 중앙 정렬 */
 }
 
 .mybook-tab-button:hover {

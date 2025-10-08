@@ -18,6 +18,7 @@ export default [
     route("/mypage/login", "./Mypage/LoginPage.jsx"),
     route("/mypage/profile", "./Mypage/ProfileSelect.jsx"),
     route("/mypage/childselect", "./Mypage/ChildProfileSelect.jsx"),
+    route("/profilelogout", "./Mypage/ProfileLogoutPage.jsx"),
     route("/logout", "./Mypage/LogoutPage.jsx"),
   ]),
     layout("./Layouts/IndexNavSimple.jsx", [

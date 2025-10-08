@@ -5,15 +5,14 @@ import { Link, NavLink, Outlet, redirect, useLoaderData } from "react-router"
 
 import "~/styles/mypage.css";
 
-export default function ParentPage(props) {
-  const { profile } = props;
+export default function ParentPage({ username, profile }) {
 
   return (
     <>
       <div className="mypage-top">
         <div className="my-name-card">
           <img src="/images/default_profile.png" alt={profile.name} />
-          <div className="my-title-and-name">전설의 이야기꾼<br/>{profile.name} 작가 부모님</div>
+          <div className="my-title-and-name">전설의 이야기꾼<br/>{username}작가 부모 {profile.name}님</div>
         </div>
       </div>
 

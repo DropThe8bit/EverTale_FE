@@ -31,11 +31,13 @@ export default function MybookCollection() {
         <div className="mybook-tab-bar">
           <Link to={storyLink}>
             <div className={`mybook-tab-button ${!isCharacter ? "button-active" : ""}`}>
+            {!isCharacter && <img src="/images/mybook_selector.png" alt="선택됨" />}
               스토리 모음
             </div>
           </Link>
           <Link to={characterLink}>
             <div className={`mybook-tab-button ${isCharacter ? "button-active" : ""}`}>
+            {isCharacter && <img src="/images/mybook_selector.png" alt="선택됨" />}
               주인공 모음
             </div>
           </Link>
@@ -66,7 +68,7 @@ export async function loader({ request }) {
   if (!childAccessToken) {
     return redirect(`/mypage/login`);
   }
-  console.log("세션에서 빼기",username, profileId, childAccessToken )
+
   const url = new URL(request.url);
   const mode = url.searchParams.get("mode");
 

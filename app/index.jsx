@@ -2,20 +2,24 @@ import { Link, redirect, useLoaderData } from "react-router";
 import { inquiryAllStory } from "./api/book.server";
 import { getSession } from "./auth/auth";
 
-const dummyBooks = [
-  { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-  { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-  { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-  { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-  { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-  { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-  { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-  { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-];
+// const dummyBooks = [
+//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
+//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
+//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
+//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
+//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
+//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
+//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
+//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
+// ];
 
 
 export default function EveryLibrary() {
   const storydata = useLoaderData();
+  const filteredStories = storydata.filter(book => {
+    // 필수 값 중 null포함되어 있으면 걸러내기 
+    return book && book.storyId && book.imageUrl && book.title;
+  });
 
   return (
     <div className="every-library-page">
@@ -24,7 +28,7 @@ export default function EveryLibrary() {
       <div className="separator"></div>
 
       <div className="book-grid">
-        {storydata.map((book, index) => (
+        {filteredStories.map((book, index) => (
           <div key={index} className="book-card">
             <Link to={`/mybook/bookview/${book.storyId}/1?title=${book.title}&author=${book.authorName}`} >
               <img src={book.imageUrl} alt={book.title} />
