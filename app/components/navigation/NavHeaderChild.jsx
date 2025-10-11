@@ -2,55 +2,55 @@ import { Link, NavLink, Outlet, useLocation } from "react-router"
 import "~/styles/navHeader.css";
 
 export default function NavHeaderChild(props) {
-	const location = useLocation();
-	const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
-	params.set("user", "child");
+  const location = useLocation();
+  const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
+  params.set("user", "child");
   const { username } = props;
 
-	// console.log("start")
-	return (
-		<>
-			<header className="nav-bar">
-				<nav className="nav-align">
-					<li className="navbar-logo">
-						<Link to="/?user=child">
-							<img src="/images/logo.png" alt="EverTale logo" />
-						</Link>
-						<div className="nav-profile">
-							<span>{username}</span>
-							<img src="/nav_icon/profile.png" alt="profile" />
-						</div>
-					</li>
-					<ul className="nav-list">
-						<li className="nav-item">
-							<NavLink to="/?user=child" activeClassName="active" className="link">
-								<img src="/nav_icon/every_library.png" alt="every_library" />
-								{/* <NavLink to={`/places/${place.eid}`} activeClassName="active" className="link"> */}
-								모두의 책장
-							</NavLink>
-						</li>
-						<li className="nav-item">
-							<NavLink to="/story?user=child" activeClassName="active" className="link">
-								<img src="/nav_icon/story_making.png" alt="story_making" />
-								스토리 만들기
-							</NavLink>
-						</li>
-						<li className="nav-item">
-							<NavLink to="/mybook?user=child" activeClassName="active" className="link">
-								<img src="/nav_icon/my_library.png" alt="my_library" />
-								나만의 책장
-							</NavLink>
-						</li>
-						<li className="nav-item">
-							<NavLink to="/mypage?user=child" className="link">
-								<img src="/nav_icon/mypage.png" alt="mypage" />
-								마이페이지
-							</NavLink>
-						</li>
-					</ul>
-				</nav>
-			</header>
-		</>
-	);
+  // console.log("start")
+  return (
+    <>
+      <header className="nav-bar">
+        <nav className="nav-align">
+          <li className="navbar-logo">
+            <Link to="/?user=child">
+              <img src="/images/logo.png" alt="EverTale logo" />
+            </Link>
+            <div className="nav-profile">
+              <span>{username}</span>
+              <img src="/nav_icon/profile.png" alt="profile" />
+            </div>
+          </li>
+          <ul className="nav-list">
+            <li className="nav-item">
+              <NavLink to="/?user=child" activeClassName="active" className="link">
+                <img src="/nav_icon/every_library.png" alt="every_library" />
+                {/* <NavLink to={`/places/${place.eid}`} activeClassName="active" className="link"> */}
+                모두의 책장
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/story?user=child" activeClassName="active" className="link">
+                <img src="/nav_icon/story_making.png" alt="story_making" />
+                스토리 만들기
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/mybook?user=child" activeClassName="active" className="link">
+                <img src="/nav_icon/my_library.png" alt="my_library" />
+                나만의 책장
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink to="/mypage?user=child" className="link">
+                <img src="/nav_icon/mypage.png" alt="mypage" />
+                마이페이지
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+      </header>
+    </>
+  );
 }
 

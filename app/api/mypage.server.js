@@ -51,6 +51,31 @@ export async function loginUser(loginData) {
 }
 
 
+export async function loginNaverUser(code, state) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/naver-login?code=${code}&state=${state}`,  
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to sign up:", error);
+    return null;
+  }
+}
+
+
 export async function createParentProfile(token) {
   try {
     const response = await fetch(

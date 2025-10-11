@@ -23,6 +23,8 @@ export default [
   ]),
     layout("./Layouts/IndexNavSimple.jsx", [
     route("/mybook/bookview/:storyId/:pageNum", "./BookReader/BookReader.jsx"), // 책읽기 화면, 퀴즈 화면
+    route("/play-voice", "./BookReader/play-voice.jsx"), // 책읽기 화면, 퀴즈 화면
+
     // // 이스터에그 포함된 나의 책 읽기
     // route("/mybook/:gid", "./Book/BookPage.jsx", { id: "mybook-reader" }),
     // route("/mybook/quiz/:gid", "./Book/QuizPage.jsx", { id: "mybook-quiz" })
