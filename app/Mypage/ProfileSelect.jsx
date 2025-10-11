@@ -145,6 +145,7 @@ export async function action({ request }) {
         if (result.result.profileType == "CHILD") {
           session.set("profileId", profileId);
           session.set("username", profileName);
+          session.set("myName", profileName);
           return redirect("/?user=child", {
             headers: {
               "Set-Cookie": await commitSession(session),

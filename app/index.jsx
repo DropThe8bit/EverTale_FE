@@ -1,4 +1,4 @@
-import { Link, redirect, useLoaderData } from "react-router";
+import { Link, redirect, useLoaderData, useSearchParams } from "react-router";
 import { inquiryAllStory } from "./api/book.server";
 import { getSession } from "./auth/auth";
 
@@ -16,6 +16,9 @@ import { getSession } from "./auth/auth";
 
 export default function EveryLibrary() {
   const storydata = useLoaderData();
+  const [searchParams] = useSearchParams();
+  const isChildUser = searchParams.get("user") == "child";
+
   const filteredStories = storydata.filter(book => {
     // 필수 값 중 null포함되어 있으면 걸러내기 
     return book && book.storyId && book.imageUrl && book.title;
@@ -30,7 +33,7 @@ export default function EveryLibrary() {
       <div className="book-grid">
         {filteredStories.map((book, index) => (
           <div key={index} className="book-card">
-            <Link to={`/mybook/bookview/${book.storyId}/1?title=${book.title}&author=${book.authorName}`} >
+            <Link to={`/mybook/bookview/${book.storyId}/1?title=${book.title}&author=${book.authorName}&${isChildUser ? '&user=child' : ''}`} >
               <img src={book.imageUrl} alt={book.title} />
               <div className="book-title">{book.title}</div>
             </Link>

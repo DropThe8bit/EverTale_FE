@@ -101,21 +101,6 @@
 	white-space: nowrap;
 }
 
-.book-reader-voice-button {
-	background-color: #fcfcfc;
-	color: #425C29;
-	border: none;
-	border-radius: 20px;
-	padding: 0 16px;
-	margin-left: 20px;
-	height: 30px;
-	font-size: 16px;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	flex-shrink: 0;
-}
-
 /* 실제 페이지 내용 (그림 + 글)이 들어갈 영역 */
 .book-story-image-pages {
 	position: absolute;
@@ -227,9 +212,9 @@
 .voice-selector-container {
 	position: relative;
 	display: inline-block;
-	width: 180px;
-	min-width: 180px;
-	margin-left: 0;
+  width: 180px;
+  min-width: 180px;
+	margin-left: 10px;
 }
 
 .book-reader-voice-button {
@@ -237,19 +222,35 @@
 	color: #425C29;
 	border: 1px solid #eee;
 	border-radius: 20px;
-	padding: 0 15px;
-	min-width: 100px;
+	padding: 0 auto;
+	width: 120px;
 	height: 35px;
 	font-size: 16px;
 	cursor: pointer;
 	display: flex;
+  justify-content:flex-start;
+  align-items: center;
+  margin: 0;
 }
+
+.voice-button-text {
+	padding: 0 10px 0 15px; 
+	cursor: pointer;
+  }
+  
+  .voice-button-toggle {
+	padding: 0 10px 0 0;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+  }
+
 
 .voice-dropdown-menu {
 	position: absolute;
 	top: 100%;
-	/* 버튼 바로 아래에 위치 */
-	left: 0;
+  left: 0;
 	background-color: white;
 	border: 1px solid #eee;
 	border-radius: 8px;
@@ -303,12 +304,6 @@
 .add-voice-button:hover {
 	background-color: #f9f9f9;
 }
-
-/* 기존 목소리 목록을 감싸는 div (선택사항) */
-.voice-list {
-	/* 필요하다면 스타일 추가 */
-}
-
 
 .modal-overlay {
 	position: fixed;
@@ -444,7 +439,6 @@
 }
 
 
-
 .toggle-svg-arrow {
   display: inline-flex; /* SVG 정렬을 위해 flex 사용 */
   align-items: center;
@@ -460,3 +454,5 @@
 .toggle-svg-arrow.open {
   transform: rotate(180deg); /* 180도 회전 */
 }
+
+

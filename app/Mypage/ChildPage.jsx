@@ -31,7 +31,7 @@ export default function ChildPage(props) {
       </div>
 
       <div className="mypage-bottom">
-        <Link to="/">
+        <Link to="/?user=child">
           <img src="/images/logo.png" alt="EverTale logo" />
         </Link>
       </div>

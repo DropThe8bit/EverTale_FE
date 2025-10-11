@@ -5,7 +5,7 @@ export default function NavHeaderChild(props) {
   const location = useLocation();
   const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
   params.set("user", "child");
-  const { username } = props;
+  const myName = props.myName || "로그인 | 회원가입";
 
   // console.log("start")
   return (
@@ -17,7 +17,7 @@ export default function NavHeaderChild(props) {
               <img src="/images/logo.png" alt="EverTale logo" />
             </Link>
             <div className="nav-profile">
-              <span>{username}</span>
+              <span>{myName}</span>
               <img src="/nav_icon/profile.png" alt="profile" />
             </div>
           </li>

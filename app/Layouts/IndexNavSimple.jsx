@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useSearchParams } from "react-router"; 
+import { Link, Outlet, useLoaderData, useSearchParams } from "react-router"; 
 import "~/styles/navSimple.css";
 
 import NavSide from "~/components/navigation/NavSide";
 import NavSideChild from "~/components/navigation/NavSideChild";
+import { getSession } from '~/auth/auth';
 
 export default function NavSimple() {
+  const { myName } = useLoaderData() || "로그인 | 회원가입";
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [searchParams] = useSearchParams();
@@ -24,11 +27,11 @@ export default function NavSimple() {
                 <img src="/nav_icon/navside_button.png" alt="Navside button" />
               </button>
             </div>
-            <Link to="/">
+            <Link to={`/?${isChildUser ? '&user=child' : ''}`}>
               <img src="/images/logo.png" alt="EverTale logo" />
             </Link>
             <div className="nav-simple-profile">
-              <span>로그인 | 회원가입</span>
+              <span>{myName}</span>
               <img src="/nav_icon/profile.png" alt="profile" />
             </div>
           </li>
@@ -51,4 +54,15 @@ export default function NavSimple() {
       )}
     </>
   );
+}
+
+export async function loader({ request }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const childAccessToken = session.get("childAccessToken");
+
+  if (childAccessToken) {
+    const myName = session.get("myName");
+    return { myName };
+  }
+  return { myName: null };
 }

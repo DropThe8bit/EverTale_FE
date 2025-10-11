@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import "~/styles/bookReader.css";
-import { Form, Link, useFetcher, useLoaderData, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Form, Link, redirect, useFetcher, useLoaderData, useNavigate, useParams, useSearchParams } from 'react-router';
 
 import ReaderView from "~/components/bookReader/ReaderView"
 import QuizView from "~/components/bookReader/QuizView"
 import { getSession } from '~/auth/auth';
-import { readingStoryfromBook } from '~/api/book.server';
+import { readingStoryPage } from '~/api/book.server';
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
 
 function VoiceRegistrationModal({ onClose, onSave }) {
@@ -39,8 +39,7 @@ function VoiceRegistrationModal({ onClose, onSave }) {
         ) : (
           <>
             <h2>목소리 등록하기</h2>
-            <h4>아래 문장을 녹음해주세요</h4>
-            <p>감정을 풍부하게 담아 천천히 읽어주세요.<br />마이크를 가까이 두고 10초 이내로 녹음해 주세요.</p>
+            <p>감정을 풍부하게 담아 아래 문장을 천천히 읽어주세요.<br />마이크를 가까이 두고 10초 이내로 녹음해 주세요.</p>
             <div className="voice-modal-sample">
               <p>빗방울이 창문에 톡톡톡 떨어지며<br />'오늘도 수고했어'라고 말하는 것 같았어요.</p>
             </div>
@@ -95,7 +94,6 @@ export default function BookReader() {
   const bookData = useLoaderData();
   const { storyId, pageNum } = useParams();
   const sceneId = bookData.sceneId;
-
   const currentPageNumber = parseInt(pageNum, 10);
 
   const [searchParams] = useSearchParams();
@@ -118,6 +116,7 @@ export default function BookReader() {
   }, [storyId, pageNum, user, title, author]);
 
 
+  // 페이지별 스토리 관리
   const handleNextPage = () => {
     if (currentPageNumber < 8) {
       const nextPage = currentPageNumber + 1;
@@ -139,44 +138,17 @@ export default function BookReader() {
   const isLastPage = currentPageNumber === bookData.length;
 
 
+  // 음성 관리
   const [isOpen, setIsOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState(null);
 
+  const dropdownRef = useRef(null);
   const voiceFetcher = useFetcher();
   const voiceNarrationFetcher = useFetcher();
 
-  useEffect(() => {
-    if (isOpen && voiceFetcher.state === 'idle' && !voiceFetcher.data) {
-      voiceFetcher.load('?fetch=voicesList');
-    }
-  }, [isOpen, voiceFetcher]);
-
-
-  const handleVoiceSelect = (voice) => {
-    console.log("버튼이 클릭되었습니다!");
-
-    console.log("Selected voice object:", voice.voiceId);
-    console.log("Current sceneId:", sceneId);
-    const formData = new FormData();
-    formData.append('_action', 'playVoice');
-    formData.append('voiceId', voice.voiceId);
-    formData.append('sceneId', sceneId);
-    voiceNarrationFetcher.submit(formData, { method: 'post' });
-    setIsOpen(false);
-  };
-  // 2. fetcher가 action으로부터 데이터를 받아오면 이 코드가 실행됩니다.
-  useEffect(() => {
-    // action이 반환한 audioUrl이 존재하면
-    if (voiceNarrationFetcher.data?.audioUrl) {
-      // 해당 URL로 오디오 객체를 만들어 재생합니다.
-      const audio = new Audio(voiceNarrationFetcher.data.audioUrl);
-      audio.play();
-    }
-  }, [voiceNarrationFetcher.data]);
-
-  const [audioUrl, setAudioUrl] = useState(null);
-
+  // 드롭다운 배경 클릭 
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -190,12 +162,54 @@ export default function BookReader() {
   }, [dropdownRef]);
 
 
-  // '목소리 추가' 버튼 클릭 시 실행
+  useEffect(() => {
+    if (isOpen && voiceFetcher.state === 'idle' && !voiceFetcher.data) {
+      voiceFetcher.load('?fetch=voicesList');
+    }
+  }, [isOpen, voiceFetcher]);
+
+
+  const playVoice = (voice) => {
+    if (!voice) return; // 선택된 목소리가 없으면 아무것도 안 함
+    console.log(`${voice.name} 목소리 재생 요청`);
+    const formData = new FormData();
+    formData.append('_action', 'playVoice');
+    formData.append('voiceId', voice.voiceId);
+    formData.append('sceneId', sceneId); // sceneId가 있다고 가정
+    voiceNarrationFetcher.submit(formData, { method: 'post' });
+  };
+
+  // 드롭다운 목록에서 목소리를 선택했을 때 즉시 실행
+  const handleVoiceSelect = (voice) => {
+    setSelectedVoice(voice);
+    setIsOpen(false);
+    playVoice(voice);
+  };
+
+  // 이미 선택된 목소리가 있다면 재생하고, 없다면 메뉴를 열기
+  const handleMainButtonClick = () => {
+    if (selectedVoice) {
+      playVoice(selectedVoice);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+
+  useEffect(() => {
+    // action이 반환한 audioUrl이 존재하면
+    if (voiceNarrationFetcher.data?.audioUrl) {
+      // 해당 URL로 오디오 객체를 만들어 재생합니다.
+      const audio = new Audio(voiceNarrationFetcher.data.audioUrl);
+      audio.play();
+    }
+  }, [voiceNarrationFetcher.data]);
+
+
   const handleAddVoiceClick = () => {
     setIsVoiceModalOpen(true);
     setIsOpen(false);
   };
-
 
   return (
     <div className="book-layout">
@@ -205,14 +219,19 @@ export default function BookReader() {
             <div className="book-info-title">
               <h2>{title}</h2>
               <div className="voice-selector-container" ref={dropdownRef}>
-                <button className="book-reader-voice-button" onClick={() => setIsOpen(!isOpen)}>
-                  읽어주기
-                  <span className={`toggle-svg-arrow ${isOpen ? 'open' : ''}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                      <path fillRule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                    </svg>
-                  </span>
-                </button>
+                <div className="book-reader-voice-button">
+                  <div className="voice-button-text" onClick={handleMainButtonClick}>
+                    {selectedVoice ? selectedVoice.name : '읽어주기'}
+                  </div>
+                  <div className="voice-button-toggle" onClick={() => setIsOpen(!isOpen)}>
+                    <span className={`toggle-svg-arrow ${isOpen ? 'open' : ''}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
 
                 {isOpen && (
                   <div className="voice-dropdown-menu">
@@ -248,9 +267,7 @@ export default function BookReader() {
                     hidden // 플레이어 UI는 화면에 보이지 않게 처리
                   />
                 )}
-
               </div>
-
             </div>
             <p>{author} 작가님</p>
           </div>
@@ -322,11 +339,13 @@ export async function loader({ request, params }) {
         return voiceData.result.voiceSummaries || [];
       }
     }
-    const bookData = await readingStoryfromBook(childAccessToken, storyId, pageNum);
+    const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);
+    // const bookDataAll = await readingStoryAllPage(childAccessToken, storyId);
+
     return bookData.result;
   } catch (error) {
     console.error("loader에서 심각한 오류 발생:", error);
-    return redirect(`/mypage/login`);
+    // return redirect(`/mypage/login`);
   }
 }
 

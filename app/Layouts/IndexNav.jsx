@@ -7,12 +7,12 @@ import { getSession } from "~/auth/auth";
 export default function IndexNav() {
   const [searchParams] = useSearchParams();
   const isChildUser = searchParams.get("user") == "child";
-  const { username, myName } = useLoaderData() || {};
+  const { myName } = useLoaderData() || {};
   return (
     <div>
       {isChildUser ? (
         <>
-          <NavHeaderChild username={username}/>
+          <NavHeaderChild myName={myName}/>
         </>
       ) : (
         <>
@@ -29,10 +29,9 @@ export async function loader({ request }) {
   const childAccessToken = session.get("childAccessToken");
 
   if (childAccessToken) {
-    const username = session.get("username") || [];
     const myName = session.get("myName") || [];
-    return { username, myName };
+    return { myName };
   }
-  return { username: null, myName: null };
+  return { myName: null };
 }
 
