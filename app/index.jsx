@@ -62,9 +62,6 @@ export async function loader({ request }) {
   }
   const profileId = session.get("profileId");
 
-  const url = new URL(request.url);
-  const mode = url.searchParams.get("mode");
-
   const allStoryList = await inquiryAllStory(childAccessToken, profileId);
   return allStoryList.result.storySummaries;
 

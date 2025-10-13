@@ -8,7 +8,7 @@ import { getSession } from '~/auth/auth';
 import { readingStoryPage } from '~/api/book.server';
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
 
-function VoiceRegistrationModal({ onClose, onSave }) {
+function VoiceRegistrationModal({ onClose }) {
   const [fileName, setFileName] = useState('');
 
   // 사용자가 파일을 선택했을 때 실행되는 함수
@@ -101,7 +101,8 @@ export default function BookReader() {
   const user = searchParams.get("user");
   const title = searchParams.get("title");
   const author = searchParams.get("author");
-
+  
+  const isChildMode = user ==="child";
   const isQuiz = currentMode === "quiz";
 
   // 퀴즈/읽기 모드 전환 링크 생성
@@ -252,12 +253,14 @@ export default function BookReader() {
                         ))
                       )}
                     </div>
+                   {!isChildMode && (
                     <div className="add-voice-section">
                       <button className="add-voice-button" onClick={handleAddVoiceClick}>
                         목소리 등록
                       </button>
                     </div>
-                  </div>
+                   )}
+                   </div>
                 )}
                 {audioUrl && (
                   <audio

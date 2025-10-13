@@ -16,6 +16,8 @@ export default [
 
     route("/mypage/signup", "./Mypage/SignUpPage.jsx"),
     route("/mypage/login", "./Mypage/LoginPage.jsx"),
+    route("/mypage/naver", "./Mypage/NaverLogin.jsx"),
+    route("/api/auth/naver-login", "./Mypage/api.auth.naver-login.jsx"),
     route("/mypage/profile", "./Mypage/ProfileSelect.jsx"),
     route("/mypage/childselect", "./Mypage/ChildProfileSelect.jsx"),
     route("/profilelogout", "./Mypage/ProfileLogoutPage.jsx"),
