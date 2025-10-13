@@ -2,19 +2,17 @@
 .signup-container {
   width: 100%;
   max-width: 850px;
-  /* 폼의 최대 너비 */
-  margin: 180px auto;
-  /* 페이지 중앙에 위치 (상하 여백 4rem) */
-  padding: 2rem;
-  font-family: sans-serif;
+  margin: 168px auto;
+  padding: 32px;
 }
 
 .signup-container p {
   text-align: center;
   color: #333;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 0px;
+  
 }
 
 .signup-guide-mention {
@@ -33,14 +31,11 @@
 }
 
 
-/* 각 입력 필드(레이블 + 인풋)를 묶는 div */
 .signup-group {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  /* 줄 간격 */
   max-width: 860px;
-  /* 이미지 느낌의 폭 */
 }
 
 /* 한 줄(라벨+인풋) */
@@ -59,8 +54,7 @@
 /* 왼쪽 라벨 텍스트 영역 고정폭 */
 .label-text {
   width: 120px;
-  /* 필요하면 130~140px로 조정 */
-  font-weight: 400;
+  font-weight: 100;
   color: #131313;
   letter-spacing: -0.2px;
 }
@@ -110,8 +104,9 @@
   background: var(--color-primary-10);
   border: 2px solid #8DAE6E;
   color: #fff;
-  font-weight: 600;
-  font-size: 18px;
+  font-family: 'BM Jua';
+  font-weight: 100;
+  font-size: 20px;
   cursor: pointer;
   width: 400px;
 }
@@ -131,7 +126,7 @@
 
 .back-login-button p {
   color: #8DAE6E;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 100;
+  font-size: 20px;
   margin: 0;
 }

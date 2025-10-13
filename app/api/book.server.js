@@ -61,7 +61,7 @@ export async function inquiryMyStory(childAccessToken, profileId) {
 export async function inquiryMyCharacter(childAccessToken, profileId) {
 	try {
 		const response = await fetch(
-			`${API_BASE_URL}/api/characters?page=0&size=20&sort=name`,
+			`${API_BASE_URL}/api/characters/list/${profileId}?page=0&size=20&sort=name`,
 			{
 				method: 'GET',
 				headers: {

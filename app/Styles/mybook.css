@@ -1,14 +1,13 @@
 .mybook-page {
   max-width: 945px;
-  margin: 178px auto 0;
+  margin: 166px auto 0;
   padding: 30px 20px;
-  font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 제목 */
 .mybook-page h1 {
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 400;
   text-align: left;
   margin-bottom: 5px;
   color: #3C3C3C;
@@ -35,7 +34,7 @@
   border: none;
   padding: 12px 24px 10px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: #3c3c3c;
   border-radius: 15px 15px 0 0;
   cursor: pointer;
@@ -44,7 +43,7 @@
 
 .mybook-tab-button.button-active {
   background-color: var(--color-primary-10);
-  font-weight: 700;
+  font-weight: 400;
   color: white;
 }
 
@@ -114,7 +113,7 @@
   width: 100%;
   padding: 12px;
   color: white;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 18px;
   text-align: center;
   border-radius: 0 0 16px 16px;
@@ -188,6 +187,7 @@
   max-width: 201px;
   margin: 0 auto;
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 /* 주인공 이미지 */
@@ -197,12 +197,13 @@
   object-fit: cover;
   border-radius: 50%;
   display: block;
+  margin-bottom: 5px;
 }
 
 .mycharacter-name {
   font-size: 20px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 3px;
 }
 
@@ -212,7 +213,7 @@
   font-weight: 400;
 }
 
-/* 모달 뒷배경 */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -226,9 +227,8 @@
   z-index: 1000;
 }
 
-/* 모달 컨텐츠 박스 */
 .modal-content {
-  background-color: #fdfaf3; /* 이미지와 유사한 베이지색 */
+  background-color: #fdfaf3; 
   padding: 30px;
   border-radius: 16px;
   width: 350px;
@@ -238,7 +238,6 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* 닫기 버튼 */
 .close-button {
   position: absolute;
   top: 15px;
@@ -250,32 +249,27 @@
   cursor: pointer;
 }
 
-/* 캐릭터 이름 (제목) */
 .modal-content h1 {
   color: #333;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-size: 28px;
 }
 
-/* 프로필 이미지 */
 .profile-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%; /* 원형으로 만들기 */
+  width: 200px;
+  height: 200px;
+  border-radius: 50%; 
   object-fit: cover; /* 이미지가 찌그러지지 않도록 */
-  margin-bottom: 20px;
 }
 
-/* 구분선 */
 .separator {
   border: none;
   height: 1px;
-  background-color: #e0d9c6; /* 구분선 색상 */
-  margin: 0;
+  background-color: #8DAE6E; 
+  margin-bottom: 20px;
 }
 
-/* 정보 섹션 (나이, 성별, 성격) */
 .info-section {
   text-align: left;
   margin: 25px 0;
@@ -284,7 +278,9 @@
 
 .info-section p {
   margin: 12px 0;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 500;
+
 }
 
 .info-section strong {
@@ -293,19 +289,18 @@
   color: #111;
 }
 
-/* "<...>" 주인공 문구 */
 .story-protagonist {
   color: #555;
-  font-size: 14px;
-  margin-bottom: 25px;
+  font-size: 18px;
+  margin-bottom: 25px;  
+  font-weight: 400;
 }
 
-/* '책 읽으러 가기' 버튼 */
 .action-button {
-  background-color: #8DB584; /* 이미지와 유사한 녹색 */
+  background-color: #8DAE6E; 
   color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 10px;
   padding: 12px 25px;
   font-size: 16px;
   font-weight: bold;

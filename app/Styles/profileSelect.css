@@ -5,6 +5,7 @@
   align-items: center;
   gap: 10px;
 }
+
 .profile-item-button {
   all: unset;            /* 브라우저 기본 스타일 제거 */
   cursor: pointer;
@@ -57,17 +58,15 @@
 .profile-selector-container {
 	width: 100%;
 	max-width: 850px;
-	/* 폼의 최대 너비 */
 	margin: 180px auto;
-	/* 페이지 중앙에 위치 (상하 여백 4rem) */
-	padding: 2rem;
+	padding: 20px;
 }
 
 .profile-selector-container p {
 	text-align: center;
 	color: #333;
 	font-size: 32px;
-	font-weight: 600;
+	font-weight: 400;
 	margin-bottom: 1.5rem;
 }
 

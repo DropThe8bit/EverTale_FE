@@ -1,13 +1,11 @@
 .story-character-creator-title {
 	width: 100%;
 	max-width: 850px;
-	/* 폼의 최대 너비 */
-	margin: 208px auto 0;
-	/* 페이지 중앙에 위치 (상하 여백 4rem) */
+	margin: 196px auto 0;
 	text-align: center;
 	color: #333;
 	font-size: 32px;
-	font-weight: 600;
+	font-weight: 400;
 }
 
 .story-character-separator {
@@ -49,6 +47,7 @@
 	align-items: flex-start;
 	gap: 24px;
 	margin: 0;
+	font-family: 'Inter';
 }
 
 .story-character-form-group label {
@@ -172,6 +171,7 @@ textarea {
 .story-character-uploader-placeholder {
 	text-align: center;
 	color: #969696;
+	font-family: 'Inter';
 }
 
 .story-character-folder-icon {

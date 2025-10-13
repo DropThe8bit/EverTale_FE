@@ -13,6 +13,19 @@ body {
     color-scheme: dark;
   }
 } */
+@font-face {
+  font-family: 'BM Jua';
+  src: url('./fonts/BMJUA.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nanum';
+  src: url('./fonts/Nanum.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
 * {
   box-sizing: border-box;
@@ -33,7 +46,7 @@ body {
 }
 
 html {
-  font-family: 'Rubik', sans-serif, 'Inter', 'BM Jua';
+  font-family: 'BM Jua', 'Rubik', sans-serif, 'Inter', 'Nanum';
 }
 
 body {
@@ -58,16 +71,18 @@ a {
   max-width: 945px;
   margin: 166px auto 0;
   padding: 30px 20px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Noto Sans KR', sans-serif, 'BM Jua';
 }
 
 /* 제목 */
 .every-library-page h1 {
   font-size: 32px;
-  font-weight: 800;
+  font-style: normal;
+  font-weight: 400;
   text-align: center;
   margin-bottom: 8px;
   color: #3C3C3C;
+  font-family: 'BM Jua';
 }
 
 .every-library-page p {
@@ -106,7 +121,7 @@ a {
   height: 100%;
   min-width: 190px;
   max-width: 200px;
-  min-height: 230px; 
+  min-height: 230px;
   max-height: 240px;
   margin: 0 auto;
   transition: transform 0.2s ease;
@@ -129,10 +144,11 @@ a {
   padding: 12px;
   background: rgba(0, 0, 0, 0.4);
   color: white;
-  font-weight: bold;
+  font-weight: 400;
   font-size: 18px;
   border-radius: 0 0 16px 16px;
   text-align: center;
+  font-family: 'BM Jua';
 }
 
 /* 페이지네이션 영역 */
@@ -145,7 +161,7 @@ a {
 }
 
 .page-button {
-  padding: 8px ;
+  padding: 8px;
   border: 1px solid #ccc;
   background-color: white;
   color: #333;
