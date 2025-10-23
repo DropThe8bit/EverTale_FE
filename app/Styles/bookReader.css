@@ -269,7 +269,7 @@
 .voice-dropdown-menu p {
   font-size: 16px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   margin: 10px 15px;
 }
 
@@ -294,7 +294,7 @@
   padding: 10px;
   margin: 5px 10px;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
 
 }
 
@@ -332,7 +332,7 @@
   z-index: 2000;
 }
 
-.voice-modal-content {
+.modal-content {
   background-color: white;
   padding: 30px;
   border-radius: 12px;
@@ -340,6 +340,8 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
+  font-family: 'Inter';
+  position: relative;
 }
 
 .voice-modal-content h2 {
@@ -412,7 +414,6 @@
   margin-left: 12px;
   font-size: 14px;
   color: #333;
-  /* 파일 이름이 너무 길 경우 ...으로 표시 */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -463,11 +464,121 @@
 
 .toggle-svg-arrow svg {
   color: #425C29;
-  /* 아이콘 색상 */
 }
 
 /* isOpen이 true일 때 적용될 스타일 */
 .toggle-svg-arrow.open {
   transform: rotate(180deg);
-  /* 180도 회전 */
+}
+
+/* 퀴즈 컨테이너 (오른쪽 페이지) */
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; /* 요소들을 위/중간/아래로 분산 */
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.quiz-question {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  padding: 10px 30px;
+}
+
+.quiz-options-list {
+  display: flex;
+  flex-direction: column;
+  width: 85%; /* 버튼 너비 */
+  max-width: 400px;
+  gap: 12px; 
+}
+
+.quiz-option-button {
+  width: 300px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #ffffff; 
+  color: #333; 
+  font-family: 'BM Jua';
+  font-size: 16px;
+  font-weight: 400;
+  text-align: left; 
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.quiz-option-button:not(.selected):hover {
+  background-color: #f9f9f9;
+  border-color: #ccc;
+}
+
+
+.quiz-option-button.selected {
+  background-color: #8DAE6E; /* 이미지의 초록색과 유사하게 */
+  color: #ffffff; 
+  font-weight: 400;
+}
+
+.quiz-navigation {
+  display: flex;
+  justify-content: space-between; /* 양쪽 끝으로 분산 */
+  width: 80%;
+  max-width: 400px;
+  gap: 15px; /* 버튼 사이 간격 */
+}
+
+.quiz-nav-button {
+  flex-basis: 48%; /* 버튼이 공간을 나눠 가짐 */
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quiz-nav-button:hover {
+  background-color: #f9f9f9;
+}
+
+.quiz-nav-button:disabled {
+  background-color: #f5f5f5;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.modal-guide{
+  margin: 20px 10px;
+}
+
+.modal-guide img{
+  height: 150px;
+  margin-bottom: 20px;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 10px;    
+  right: 15px;    
+  background: none;
+  border: none;
+  font-size: 28px; 
+  font-weight: bold;
+  color: #aaa;     
+  cursor: pointer;
+  line-height: 1;   
+  padding: 0;
+}
+.modal-close-button:hover {
+  color: #000;
 }

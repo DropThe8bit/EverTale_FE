@@ -253,12 +253,14 @@
   color: #333;
   margin-top: 0;
   margin-bottom: 15px;
-  font-size: 28px;
+  font-size: 30px;
+  font-family: 'BM Jua';
+  font-size: 400;
 }
 
 .profile-image {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   border-radius: 50%; 
   object-fit: cover; /* 이미지가 찌그러지지 않도록 */
 }
@@ -279,8 +281,8 @@
 .info-section p {
   margin: 12px 0;
   font-size: 18px;
-  font-weight: 500;
-
+  font-family: 'BM Jua';
+  font-size: 400;
 }
 
 .info-section strong {
@@ -294,6 +296,7 @@
   font-size: 18px;
   margin-bottom: 25px;  
   font-weight: 400;
+  font-family: 'BM Jua';
 }
 
 .action-button {

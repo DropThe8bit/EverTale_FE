@@ -5,7 +5,7 @@ import { Form, Link, redirect, useFetcher, useLoaderData, useNavigate, useParams
 import ReaderView from "~/components/bookReader/ReaderView"
 import QuizView from "~/components/bookReader/QuizView"
 import { getSession } from '~/auth/auth';
-import { readingStoryPage } from '~/api/book.server';
+import { createQuiz, inquiryAllQuiz, readingStoryPage, responseAllQuiz, selectedAnswerQuiz } from '~/api/book.server';
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
 
 function VoiceRegistrationModal({ onClose }) {
@@ -33,7 +33,7 @@ function VoiceRegistrationModal({ onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="voice-modal-content">
+      <div className="modal-content">
         {isSuccess ? (
           <SuccessView />
         ) : (
@@ -88,6 +88,80 @@ function SuccessView() {
   );
 }
 
+function ResultsQuizModal({ onClose, quizResult }) {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleClick = () => {
+    navigate('/mybook');
+  };
+
+  const handleBack = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('mode');
+    setSearchParams(newParams);
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close-button" onClick={onClose}>
+          &times;
+        </button>
+
+        <div className="modal-guide">
+          <img src="/images/quiz_end.png" alt="quiz-end image" />
+          <h4>{quizResult.badge}님</h4>
+          <p>지금까지 총 {quizResult.correctAnswerCount}문제를 맞추셨어요!</p>
+        </div>
+
+        <div className="modal-buttons">
+          <button onClick={handleBack}>책 읽기</button>
+          <button onClick={handleClick}>책장으로 돌아가기</button>
+        </div>
+      </div >
+    </div >
+  );
+}
+
+function BookEndingModal({ onClose }) {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleClick = () => {
+    navigate('/mybook');
+  };
+
+  const handleQuiz = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('mode', 'quiz');
+    setSearchParams(newParams);
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close-button" onClick={onClose}>
+          &times;
+        </button>
+
+        <div className="modal-guide">
+          <img src="/images/read_end.png" alt="read-end image" />
+          <p>퀴즈를 푸시겠어요?</p>
+        </div>
+
+        <div className="modal-buttons">
+          <button onClick={handleClick}>책장으로 돌아가기</button>
+          <button onClick={handleQuiz}>퀴즈 풀기</button>
+        </div>
+      </div >
+    </div >
+  );
+}
+
+
 
 export default function BookReader() {
   const navigate = useNavigate();
@@ -101,11 +175,11 @@ export default function BookReader() {
   const user = searchParams.get("user");
   const title = searchParams.get("title");
   const author = searchParams.get("author");
-  
-  const isChildMode = user ==="child";
+
+  const isChildMode = user === "child";
   const isQuiz = currentMode === "quiz";
 
-  // 퀴즈/읽기 모드 전환 링크 생성
+  // ========퀴즈/읽기 모드 전환 링크==========
   const readerLink = useMemo(() => {
     const params = new URLSearchParams({ user, title, author });
     return `/mybook/bookview/${storyId}/${pageNum}?${params.toString()}`;
@@ -116,6 +190,9 @@ export default function BookReader() {
     return `/mybook/bookview/${storyId}/${pageNum}?${params.toString()}`;
   }, [storyId, pageNum, user, title, author]);
 
+  const isFirstPage = currentPageNumber === 1;
+  const isLastPage = currentPageNumber === bookData.length;
+  const [showEndingModal, setShowEndingModal] = useState(false);
 
   // 페이지별 스토리 관리
   const handleNextPage = () => {
@@ -123,6 +200,8 @@ export default function BookReader() {
       const nextPage = currentPageNumber + 1;
       const params = new URLSearchParams({ user, title, author });
       navigate(`/mybook/bookview/${storyId}/${nextPage}?${params.toString()}`);
+    } else {
+      setShowEndingModal(true);
     }
   };
 
@@ -135,11 +214,12 @@ export default function BookReader() {
     }
   };
 
-  const isFirstPage = currentPageNumber === 1;
-  const isLastPage = currentPageNumber === bookData.length;
+  const handleCloseEndingModal = () => {
+    setShowEndingModal(false);
+  };
 
 
-  // 음성 관리
+  // ============음성 관리=============
   const [isOpen, setIsOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -162,13 +242,11 @@ export default function BookReader() {
     };
   }, [dropdownRef]);
 
-
   useEffect(() => {
     if (isOpen && voiceFetcher.state === 'idle' && !voiceFetcher.data) {
       voiceFetcher.load('?fetch=voicesList');
     }
   }, [isOpen, voiceFetcher]);
-
 
   const playVoice = (voice) => {
     if (!voice) return; // 선택된 목소리가 없으면 아무것도 안 함
@@ -176,7 +254,7 @@ export default function BookReader() {
     const formData = new FormData();
     formData.append('_action', 'playVoice');
     formData.append('voiceId', voice.voiceId);
-    formData.append('sceneId', sceneId); // sceneId가 있다고 가정
+    formData.append('sceneId', sceneId);
     voiceNarrationFetcher.submit(formData, { method: 'post' });
   };
 
@@ -196,7 +274,6 @@ export default function BookReader() {
     }
   };
 
-
   useEffect(() => {
     // action이 반환한 audioUrl이 존재하면
     if (voiceNarrationFetcher.data?.audioUrl) {
@@ -210,6 +287,99 @@ export default function BookReader() {
   const handleAddVoiceClick = () => {
     setIsVoiceModalOpen(true);
     setIsOpen(false);
+  };
+
+
+
+
+  // =============퀴즈 관리===============
+  const quizFetcher = useFetcher();
+  const quizCreator = useFetcher();
+  const answerFetcher = useFetcher();
+  const quizResultFetcher = useFetcher();
+
+  // 퀴즈 생성이 한 번 시도되었는지 추적하는 state
+  const [hasAttemptedQuizCreation, setHasAttemptedQuizCreation] = useState(false);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [showResultsModal, setShowResultsModal] = useState(false);
+
+  useEffect(() => {
+    if (isQuiz && quizFetcher.state === 'idle' && !quizFetcher.data) {
+      console.log("새로고침", quizFetcher.data)
+      quizFetcher.load('?fetch=quiz');
+
+      // 생성 시도 여부 초기화
+      setHasAttemptedQuizCreation(false);
+    }
+  }, [isQuiz, quizFetcher.state, quizFetcher.data, quizFetcher.load]);
+
+  useEffect(() => {
+    if (
+      quizFetcher.data &&
+      quizFetcher.state === 'idle' &&
+      quizCreator.state === 'idle' &&
+      !hasAttemptedQuizCreation
+    ) {
+      const quizzes = quizFetcher.data;
+      if (Array.isArray(quizzes)) {
+        console.log("여기와?", quizzes);
+
+        // 4개에서 현재 퀴즈 개수를 뺀 '부족한 개수'를 계산
+        const quizzesToCreate = 4 - quizzes.length;
+        if (quizzesToCreate > 0) {
+          setHasAttemptedQuizCreation(true); // 생성 시도 플래그
+
+          const formData = new FormData();
+          formData.append('_action', 'createQuizzes');
+          formData.append('count', quizzesToCreate.toString());
+          quizCreator.submit(formData, { method: 'post' });
+        } else {
+          console.log("퀴즈가 이미 4개 이상이므로 생성하지 않습니다.");
+        }
+      }
+    }
+  }, [quizFetcher.data, quizFetcher.state, quizCreator.state, hasAttemptedQuizCreation]);
+
+  // 퀴즈 생성이 완료되면 퀴즈 목록을 다시 불러옴
+  useEffect(() => {
+    if (quizCreator.data?.success && quizCreator.state === 'idle') {
+      quizFetcher.load('?fetch=quiz');
+    }
+  }, [quizCreator.data, quizCreator.state, quizFetcher.load]);
+
+
+  useEffect(() => {
+    const result = answerFetcher.data?.result;
+    if (result) {
+      if (result.correct) {
+        alert("정답입니다! 🥳");
+      } else {
+        alert("틀렸습니다. 😭");
+      }
+    }
+  }, [answerFetcher.data]);
+
+  const handleSubmitAnswer = (quizId, selectedAnswer) => {
+    const formData = new FormData();
+    formData.append('_action', 'selectedAnswerQuiz');
+    formData.append('quizId', quizId);
+    formData.append('selectedAnswer', selectedAnswer);
+    answerFetcher.submit(formData, { method: 'post' });
+  };
+
+  const handleQuizCompletion = () => {
+    quizResultFetcher.load('?fetch=quizResult');
+  };
+
+  useEffect(() => {
+    if (quizResultFetcher.data) {
+      setShowResultsModal(true);
+    }
+  }, [quizResultFetcher.data]);
+
+  // 모달을 닫는 함수
+  const handleCloseModal = () => {
+    setShowResultsModal(false);
   };
 
   return (
@@ -253,14 +423,14 @@ export default function BookReader() {
                         ))
                       )}
                     </div>
-                   {!isChildMode && (
-                    <div className="add-voice-section">
-                      <button className="add-voice-button" onClick={handleAddVoiceClick}>
-                        목소리 등록
-                      </button>
-                    </div>
-                   )}
-                   </div>
+                    {!isChildMode && (
+                      <div className="add-voice-section">
+                        <button className="add-voice-button" onClick={handleAddVoiceClick}>
+                          목소리 등록
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
                 {audioUrl && (
                   <audio
@@ -293,31 +463,62 @@ export default function BookReader() {
           </div>
 
           <div className="main-reader-wrapper">
-            <button
+            {!isQuiz ? <button
               className="nav-arrow prev-arrow"
               onClick={handlePrevPage}
               disabled={isFirstPage}
             >
               ‹
-            </button>
+            </button> : ""}
 
             <div className="book-cover-container" style={{ backgroundImage: `url(/images/book_cover.png)` }}>
-              {isQuiz ? <QuizView /> : <ReaderView currentPage={bookData} />}
+              {isQuiz ? (
+                <>
+                  {(quizFetcher.state === 'idle' && quizFetcher.data) ? (
+                    <QuizView
+                      quizzes={quizFetcher.data}
+                      currentPage={bookData}
+                      currentQuizIndex={currentQuizIndex}
+                      setCurrentQuizIndex={setCurrentQuizIndex}
+                      onAnswerSubmit={handleSubmitAnswer}
+                      onQuizComplete={handleQuizCompletion}
+                    />
+                  ) : (
+                    <div className="modal-overlay">
+                      <div className="modal-content" style={{ padding: '40px' }}>
+                        <div className="loading-message" style={{ textAlign: 'center', fontSize: '18px', fontWeight: '600' }}>
+                          퀴즈를 불러오는 중...
+                          {/* (여기에 스피너 아이콘/컴포넌트를 추가하면 더 좋습니다) */}
+                        </div>
+                      </div>
+                    </div>)}
+                </>
+              ) : (
+                <ReaderView currentPage={bookData} />
+              )}
             </div>
 
-            <button
+            {!isQuiz ? <button
               className="nav-arrow next-arrow"
               onClick={handleNextPage}
-              disabled={isLastPage}
             >
               ›
-            </button>
+            </button> : ""}
           </div>
         </div>
       </div>
       {isVoiceModalOpen && (
         <VoiceRegistrationModal
           onClose={() => setIsVoiceModalOpen(false)}
+        />
+      )}
+      {showEndingModal && (
+        <BookEndingModal onClose={handleCloseEndingModal} />
+      )}
+      {showResultsModal && (
+        <ResultsQuizModal
+          onClose={handleCloseModal}
+          quizResult={quizResultFetcher.data}
         />
       )}
 
@@ -336,16 +537,37 @@ export async function loader({ request, params }) {
   if (!childAccessToken) return redirect(`/mypage/login`);
 
   try {
-    if (url.searchParams.get("fetch") === "voicesList") {
+    const fetchParam = url.searchParams.get("fetch");
+
+    if (fetchParam === "voicesList") {
       const voiceData = await inquiryVoiceList(childAccessToken);
       if (voiceData?.isSuccess) {
         return voiceData.result.voiceSummaries || [];
       }
     }
-    const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);
-    // const bookDataAll = await readingStoryAllPage(childAccessToken, storyId);
 
-    return bookData.result;
+    if (fetchParam === "quiz") {
+      const quizData = await inquiryAllQuiz(childAccessToken, storyId);
+      console.log("퀴즈 있나", quizData.result);
+      if (quizData?.isSuccess) {
+        return quizData.result || [];
+      }
+      return [];
+    }
+
+    if (fetchParam === "quizResult") {
+      const resultData = await responseAllQuiz(childAccessToken);
+      if (resultData?.isSuccess) {
+        return resultData.result || [];
+      }
+      return [];
+    }
+
+    const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);
+    if (bookData?.isSuccess) {
+      return bookData.result;
+    }
+
   } catch (error) {
     console.error("loader에서 심각한 오류 발생:", error);
     // return redirect(`/mypage/login`);
@@ -354,13 +576,13 @@ export async function loader({ request, params }) {
 
 
 export async function action({ request, params }) {
-  const formData = await request.formData();
   const { storyId } = params;
 
   const session = await getSession(request.headers.get("Cookie"));
   if (!session.has("childAccessToken")) return redirect("/mypage/login");
   const childAccessToken = session.get("childAccessToken");
 
+  const formData = await request.formData();
   const actionType = formData.get("_action");
 
   // actionType에 따라 분기 처리
@@ -376,5 +598,32 @@ export async function action({ request, params }) {
     const sceneId = formData.get("sceneId");
     const streamUrl = `/play-voice?voiceId=${voiceId}&storyId=${storyId}&sceneId=${sceneId}`;
     return { audioUrl: streamUrl };
+  }
+  else if (actionType === 'createQuizzes') {
+    try { // 컴포넌트가 보낸 'count' 값을 읽어오기 (기본값 0)
+      console.error("퀴즈 생성 :");
+
+      const count = parseInt(formData.get("count") || "0", 10);
+      if (count > 0) {
+        const quizPromises = [];
+        for (let i = 0; i < count; i++) { // 부족한 퀴즈 횟수만큼만 반복
+          quizPromises.push(createQuiz(childAccessToken, storyId));
+        }
+        await Promise.all(quizPromises);
+        return { success: true, created: count };
+      }
+      return { success: true, created: 0 };
+
+    } catch (error) {
+      console.error("action에서 퀴즈 생성 오류:", error);
+    }
+  }
+  else if (actionType === 'selectedAnswerQuiz') {// 해당 퀴즈번호와 정답을 입력하면 결과를 반환하는 함수
+    const quizId = formData.get("quizId");
+    const selectedAnswer = formData.get("selectedAnswer");
+    const result = await selectedAnswerQuiz(childAccessToken, quizId, selectedAnswer);
+    if (result.isSuccess) {
+      return result;
+    }
   }
 }

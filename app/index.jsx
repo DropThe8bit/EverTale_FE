@@ -2,17 +2,6 @@ import { Link, redirect, useLoaderData, useSearchParams } from "react-router";
 import { inquiryAllStory } from "./api/book.server";
 import { getSession } from "./auth/auth";
 
-// const dummyBooks = [
-//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-//   { title: "소연이와 다락방 요정", image: "/images/fairy.png" },
-//   { title: "용과 마음의 열쇠", image: "/images/dragon.png" },
-// ];
-
 
 export default function EveryLibrary() {
   const storydata = useLoaderData();
@@ -63,6 +52,7 @@ export async function loader({ request }) {
   const profileId = session.get("profileId");
 
   const allStoryList = await inquiryAllStory(childAccessToken, profileId);
+  // console.log(allStoryList)
   return allStoryList.result.storySummaries;
 
 }

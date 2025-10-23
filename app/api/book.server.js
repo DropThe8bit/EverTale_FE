@@ -174,3 +174,114 @@ export async function readingStoryAllPage(childAccessToken, storyId) {
 		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
 	}
 }
+
+
+export async function createQuiz(childAccessToken, storyId) {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/api/stories/${storyId}/quizzes`,
+			{
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${childAccessToken}`
+				},
+			}
+		);
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({
+				message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
+			}));
+			console.error("외부 API 서버가 반환한 에러:", errorData);
+			throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+		}
+		return await response.json();
+
+	} catch (error) {
+		console.error("Failed to create story:", error);
+		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+	}
+}
+
+export async function inquiryAllQuiz(childAccessToken, storyId) {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/api/stories/${storyId}/quizzes`,
+			{
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${childAccessToken}`
+				},
+				body: JSON.stringify(),
+			}
+		);
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({
+				message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
+			}));
+			console.error("외부 API 서버가 반환한 에러:", errorData);
+			throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+		}
+		return await response.json();
+
+	} catch (error) {
+		console.error("Failed to create story:", error);
+		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+	}
+}
+
+export async function selectedAnswerQuiz(childAccessToken, quizId, selectedAnswer) {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/api/quizzes/${quizId}/answer?selectedAnswer=${selectedAnswer}`,
+			{
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${childAccessToken}`
+				},
+			}
+		);
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({
+				message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
+			}));
+			console.error("외부 API 서버가 반환한 에러:", errorData);
+			throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+		}
+		return await response.json();
+
+	} catch (error) {
+		console.error("Failed to create story:", error);
+		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+	}
+}
+
+export async function responseAllQuiz(childAccessToken) {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/api/quizzes/summary`,
+			{
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${childAccessToken}`
+				},
+				body: JSON.stringify(),
+			}
+		);
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({
+				message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
+			}));
+			console.error("외부 API 서버가 반환한 에러:", errorData);
+			throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+		}
+		return await response.json();
+
+	} catch (error) {
+		console.error("Failed to create story:", error);
+		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+	}
+}

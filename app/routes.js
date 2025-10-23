@@ -25,7 +25,7 @@ export default [
   ]),
     layout("./Layouts/IndexNavSimple.jsx", [
     route("/mybook/bookview/:storyId/:pageNum", "./BookReader/BookReader.jsx"), // 책읽기 화면, 퀴즈 화면
-    route("/play-voice", "./BookReader/play-voice.jsx"), // 책읽기 화면, 퀴즈 화면
+    route("/play-voice", "./BookReader/play-voice.jsx"), 
 
     // // 이스터에그 포함된 나의 책 읽기
     // route("/mybook/:gid", "./Book/BookPage.jsx", { id: "mybook-reader" }),
@@ -36,4 +36,3 @@ export default [
     route("/mypage", "./Mypage/IndexMypage.jsx"), 
   ]),
 ];
-// 아이 화면 <-> 부모 화면 만들어 질거라 라우터 경로 잘 생성해야해!!!

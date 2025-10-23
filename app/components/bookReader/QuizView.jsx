@@ -1,26 +1,107 @@
-// 예시 책 데이터
-const bookData = {
-	title: "소연이와 다락방 요정",
-	author: "김이화",
-	pages: [
-		{
-			pageNumber: 1,
-			image: "/images/fairy.png", // 왼쪽 페이지에 들어갈 삽화
-			text: "소연이는 그림 그리기를 좋아하는 아이였어요.\n\n하지만 가끔씩은 어떤 그림을 그려야 할지 고민이 되었어요.\n\n어느 날, 소연이는 할머니의 다락방에서 반짝이는 색연필 상자를 발견했어요.\n\n상자를 열자, 작은 요정이 나타나 말했어요."
-		}
-	]
-};
-export default function QuizView() {
-  const currentPage = bookData.pages[0];
+import { useEffect, useState } from "react";
+
+export default function QuizView(props) {
+  const {
+    quizzes,
+    currentPage,
+    currentQuizIndex,
+    setCurrentQuizIndex,
+    onAnswerSubmit,
+    onQuizComplete
+  } = props;
+
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+  const currentQuiz = Array.isArray(quizzes) ? quizzes[currentQuizIndex] : null;
+
+
+  if (Array.isArray(quizzes) && quizzes.length === 0) {
+    return (
+      <div className="book-story-image-pages">
+        <div className="book-page left-page">
+          <img src={currentPage.imageUrl} alt={`${currentPage.pageNum} 페이지 그림`} />
+        </div>
+        <div className="book-page right-page quiz-container">
+          <h2 className="quiz-question">작가님이 아직 퀴즈를 생성하지 않았습니다.</h2>
+        </div>
+      </div>
+    );
+  }
+
+
+  useEffect(() => {
+    setSelectedAnswerIndex(null); // 퀴즈가 바뀌면 선택 리셋
+  }, [currentQuiz]);
+
+  const handleSelectAnswer = (index) => {
+    setSelectedAnswerIndex(index);
+  };
+
+  const handlePrev = () => {
+    if (currentQuizIndex > 0) {
+      setCurrentQuizIndex(currentQuizIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (selectedAnswerIndex === null) {
+      alert("답을 선택해주세요!");
+      return;
+    }
+
+    const quizId = currentQuiz.quizId;
+    const selectedAnswer = selectedAnswerIndex + 1;
+
+    onAnswerSubmit(quizId, selectedAnswer);
+
+    if (currentQuizIndex < quizzes.length - 1) {
+      setCurrentQuizIndex(currentQuizIndex + 1);
+    } else {
+      onQuizComplete();
+      console.log("last")
+    }
+  };
+
+  const isLastQuiz = currentQuizIndex === quizzes.length - 1;
+  
+
 
   return (
     <div className="book-story-image-pages">
       <div className="book-page left-page">
-        <img src={currentPage.image} alt={`${currentPage.pageNumber} 페이지 그림`} />
+        <img src={currentPage.imageUrl} alt={`${currentPage.pageNum} 페이지 그림`} />
       </div>
-      <div className="book-page right-page">
-        {/* <p className="story-text">{currentPage.text}</p> */}
+
+      <div className="book-page right-page quiz-container">
+        <h2 className="quiz-question">{currentQuiz.question}</h2>
+
+        <div className="quiz-options-list">
+          {currentQuiz.options.map((option, index) => (
+            <button
+              key={index}
+              className={`quiz-option-button ${selectedAnswerIndex === index ? 'selected' : ''}`}
+              onClick={() => handleSelectAnswer(index)}
+            >
+              {`${index + 1}. ${option}`}
+            </button>
+          ))}
+        </div>
+
+        <div className="quiz-navigation">
+          <button
+            className="quiz-nav-button"
+            onClick={handlePrev}
+            disabled={currentQuizIndex === 0}
+          >
+            이전
+          </button>
+          <button
+            className="quiz-nav-button"
+            onClick={handleNext}
+          >
+            {isLastQuiz ? "제출" : "다음"}
+          </button>
+        </div>
       </div>
     </div>
-  )
+  );
 }
