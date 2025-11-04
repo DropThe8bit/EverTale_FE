@@ -150,7 +150,7 @@ textarea {
 
 /* 이미지 업로더 */
 .story-character-image-uploader {
-	width: 100%;
+	width: 80%;
 	height: 320px;
 	border: 1px solid #777;
 	border-radius: 12px;

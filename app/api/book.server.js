@@ -3,7 +3,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export async function inquiryAllStory(childAccessToken) {
 	try {
 		const response = await fetch(
-			`${API_BASE_URL}/api/stories?page=0&size=20&sort=title`,
+			`${API_BASE_URL}/api/stories?page=0&size=50&sort=title`,
 			{
 				method: 'GET',
 				headers: {

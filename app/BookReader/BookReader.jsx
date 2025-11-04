@@ -38,8 +38,10 @@ function VoiceRegistrationModal({ onClose }) {
           <SuccessView />
         ) : (
           <>
-            <h2>목소리 등록하기</h2>
-            <p>감정을 풍부하게 담아 아래 문장을 천천히 읽어주세요.<br />마이크를 가까이 두고 10초 이내로 녹음해 주세요.</p>
+            <div className="voice-modal-content">
+              <h2>목소리 등록하기</h2>
+              <p>감정을 풍부하게 담아 아래 문장을 천천히 읽어주세요.<br />마이크를 가까이 두고 10초 이내로 녹음해 주세요.</p>
+            </div>
             <div className="voice-modal-sample">
               <p>빗방울이 창문에 톡톡톡 떨어지며<br />'오늘도 수고했어'라고 말하는 것 같았어요.</p>
             </div>
@@ -91,9 +93,10 @@ function SuccessView() {
 function ResultsQuizModal({ onClose, quizResult }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const isChildMode = searchParams.get("user") === "child";
 
   const handleClick = () => {
-    navigate('/mybook');
+    navigate(`/mybook${isChildMode ? '?user=child' : ''}`);
   };
 
   const handleBack = () => {
@@ -128,9 +131,10 @@ function ResultsQuizModal({ onClose, quizResult }) {
 function BookEndingModal({ onClose }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const isChildMode = searchParams.get("user") === "child";
 
   const handleClick = () => {
-    navigate('/mybook');
+    navigate(`/mybook${isChildMode ? '?user=child' : ''}`);
   };
 
   const handleQuiz = () => {
@@ -484,14 +488,16 @@ export default function BookReader() {
                       onQuizComplete={handleQuizCompletion}
                     />
                   ) : (
-                    <div className="modal-overlay">
-                      <div className="modal-content" style={{ padding: '40px' }}>
-                        <div className="loading-message" style={{ textAlign: 'center', fontSize: '18px', fontWeight: '600' }}>
-                          퀴즈를 불러오는 중...
-                          {/* (여기에 스피너 아이콘/컴포넌트를 추가하면 더 좋습니다) */}
-                        </div>
-                      </div>
-                    </div>)}
+                    <>
+                    </>
+                    // <div className="modal-overlay">
+                    //   <div className="modal-content" style={{ padding: '40px' }}>
+                    //     <div className="loading-message" style={{ textAlign: 'center', fontSize: '18px', fontWeight: '600' }}>
+                    //       퀴즈를 불러오는 중...
+                    //     </div>
+                    //   </div>
+                    // </div>
+                  )}
                 </>
               ) : (
                 <ReaderView currentPage={bookData} />

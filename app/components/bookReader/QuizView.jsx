@@ -14,14 +14,14 @@ export default function QuizView(props) {
   const currentQuiz = Array.isArray(quizzes) ? quizzes[currentQuizIndex] : null;
 
 
-  if (Array.isArray(quizzes) && quizzes.length === 0) {
+  if (!currentQuiz) {
     return (
       <div className="book-story-image-pages">
         <div className="book-page left-page">
           <img src={currentPage.imageUrl} alt={`${currentPage.pageNum} 페이지 그림`} />
         </div>
         <div className="book-page right-page quiz-container">
-          <h2 className="quiz-question">작가님이 아직 퀴즈를 생성하지 않았습니다.</h2>
+          <h2 className="quiz-question">아직 퀴즈를 생성하지 않았습니다.</h2>
         </div>
       </div>
     );
