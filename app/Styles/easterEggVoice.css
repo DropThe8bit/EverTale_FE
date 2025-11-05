@@ -17,9 +17,9 @@
 
 .easteregg-image-wrapper {
   position: relative;
+  max-width: 100%;
   width: 416px;
-  height: 416px;
-  display: block;
+  overflow: hidden;
 }
 
 .easteregg-image-wrapper img {
@@ -30,7 +30,7 @@
 
 .easteregg-bounding-box {
   position: absolute;
-  border: 3px solid rgb(0, 255, 38);
+  border: 2px solid rgb(0, 255, 38);
   box-sizing: border-box;
 
 }
@@ -38,7 +38,23 @@
 .easteregg-voice-register {
   justify-self: center;
   margin: 20px auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
 }
+
+
+
+.easteregg-voice-back-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
+}
+
 .easteregg-voice-submit-btn {
   align-self: flex-end;
   padding: 12px 24px;
@@ -49,7 +65,7 @@
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  width: 400px;
+  width: 200px;
 }
 
 
@@ -120,7 +136,6 @@
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
-  /* 버튼 텍스트가 줄바꿈되지 않도록 */
 }
 
 .upload-button:hover {
@@ -152,7 +167,7 @@
   width: 200px;
 }
 
-.modal-buttons button:hover {
+.modal-buttons button:not(:disabled):hover {
   background-color: #8DAE6E;
   color: white;
 }
@@ -162,10 +177,29 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px;
+  padding: 10px 25px 0 25px;
+}
+
+.success-view h3 {
+  color: #030303;
+  font-size: 20px;
 }
 
 .success-view p {
   color: #030303;
-  margin: 10px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.easteregg-complete-btn {
+  align-self: flex-end;
+  padding: 12px 24px;
+  background-color: #8DAE6E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
 }

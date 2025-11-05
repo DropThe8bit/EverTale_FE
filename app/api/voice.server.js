@@ -55,7 +55,7 @@ export async function inquiryVoiceList(childAccessToken) {
 
 export async function createVoiceNarration(childAccessToken, voiceId, storyId, sceneId) {
 	try {
-		console.log("목소리 출력 얍!");
+		console.log("목소리 출력 얍!", sceneId);
 		const response = await fetch(
 			`${API_BASE_URL}/api/voices/${voiceId}/stories/${storyId}/scenes/${sceneId}`,
 			{

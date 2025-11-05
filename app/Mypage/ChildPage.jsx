@@ -13,7 +13,7 @@ export default function ChildPage(props) {
       <div className="mypage-top">
         <div className="my-name-card">
           <img src="/images/default_profile.png" alt={profile.name} />
-          <div className="my-title-and-name">전설의 이야기꾼<br />{profile.name} 작가님</div>
+          <div className="my-title-and-name">{profile.badge}<br />{profile.name} 작가님</div>
         </div>
       </div>
 

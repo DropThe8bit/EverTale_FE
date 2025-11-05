@@ -10,8 +10,8 @@ export default [
     route("/story/:storyId/:pageNum", "./Story/StoryContentPage.jsx"),
 
     route("/easter", "./EasterEgg/EasterEggType.jsx"), // 이스터 에그
-    route("/easter/voice", "./EasterEgg/EasterEggVoice.jsx"),
-    // route("/easter/message", "./EasterEgg/EasterEggMessage"),
+    route("/easter/voice/:storyId", "./EasterEgg/EasterEggVoice.jsx"),
+    route("/easter/message/:storyId", "./EasterEgg/EasterEggMessage.jsx"),
 
     route("/mybook", "./Mybook/Mybook.jsx"),
 

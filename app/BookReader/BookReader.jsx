@@ -7,6 +7,7 @@ import QuizView from "~/components/bookReader/QuizView"
 import { getSession } from '~/auth/auth';
 import { createQuiz, inquiryAllQuiz, readingStoryPage, responseAllQuiz, selectedAnswerQuiz } from '~/api/book.server';
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
+import { clickEasterEggVoice } from '~/api/easteregg.server';
 
 function VoiceRegistrationModal({ onClose }) {
   const [fileName, setFileName] = useState('');
@@ -34,7 +35,7 @@ function VoiceRegistrationModal({ onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {isSuccess ? (
+        {!isSuccess ? (
           <SuccessView />
         ) : (
           <>
@@ -165,6 +166,23 @@ function BookEndingModal({ onClose }) {
   );
 }
 
+function EasterEggVoicePlayerModal({ audioUrl, onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h3>숨은 메세지를 찾았어요!</h3><br />
+        <audio controls autoPlay src={audioUrl} style={{ width: '100%' }}>
+          오디오 재생을 지원하지 않습니다.
+        </audio>
+
+        <div className="modal-buttons" style={{ marginTop: '20px' }}>
+          <button type="button" onClick={onClose}>닫기</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 
 export default function BookReader() {
@@ -193,6 +211,7 @@ export default function BookReader() {
     const params = new URLSearchParams({ mode: 'quiz', user, title, author });
     return `/mybook/bookview/${storyId}/${pageNum}?${params.toString()}`;
   }, [storyId, pageNum, user, title, author]);
+
 
   const isFirstPage = currentPageNumber === 1;
   const isLastPage = currentPageNumber === bookData.length;
@@ -308,14 +327,16 @@ export default function BookReader() {
   const [showResultsModal, setShowResultsModal] = useState(false);
 
   useEffect(() => {
-    if (isQuiz && quizFetcher.state === 'idle' && !quizFetcher.data) {
+    if (!isQuiz) return;
+
+    if (isQuiz && quizFetcher.state === 'idle' && !quizFetcher.data && quizFetcher.type !== 'action') {
       console.log("새로고침", quizFetcher.data)
       quizFetcher.load('?fetch=quiz');
 
       // 생성 시도 여부 초기화
       setHasAttemptedQuizCreation(false);
     }
-  }, [isQuiz, quizFetcher.state, quizFetcher.data, quizFetcher.load]);
+  }, [isQuiz, quizFetcher.state, quizFetcher.data, quizFetcher.load, quizFetcher.type]);
 
   useEffect(() => {
     if (
@@ -326,7 +347,6 @@ export default function BookReader() {
     ) {
       const quizzes = quizFetcher.data;
       if (Array.isArray(quizzes)) {
-        console.log("여기와?", quizzes);
 
         // 4개에서 현재 퀴즈 개수를 뺀 '부족한 개수'를 계산
         const quizzesToCreate = 4 - quizzes.length;
@@ -346,10 +366,12 @@ export default function BookReader() {
 
   // 퀴즈 생성이 완료되면 퀴즈 목록을 다시 불러옴
   useEffect(() => {
+    if (!isQuiz) return;
+
     if (quizCreator.data?.success && quizCreator.state === 'idle') {
       quizFetcher.load('?fetch=quiz');
     }
-  }, [quizCreator.data, quizCreator.state, quizFetcher.load]);
+  }, [isQuiz, quizCreator.data, quizCreator.state, quizFetcher.load]);
 
 
   useEffect(() => {
@@ -376,15 +398,55 @@ export default function BookReader() {
   };
 
   useEffect(() => {
+    if (!isQuiz) return;
     if (quizResultFetcher.data) {
       setShowResultsModal(true);
     }
-  }, [quizResultFetcher.data]);
+  }, [isQuiz, quizResultFetcher.data]);
 
   // 모달을 닫는 함수
   const handleCloseModal = () => {
     setShowResultsModal(false);
   };
+
+
+  // =============이스터에그 관리===============
+  const clickFetcher = useFetcher();
+  const [voiceModalUrl, setVoiceModalUrl] = useState(null);
+
+  // 자식 컴포넌트(StoryReaderView)에 prop으로 전달할 함수
+  const handleImageClick = (coordinates) => {
+    // coordinates가 null일 경우 기본값 0으로 처리
+    const safeCoordinates = coordinates || { x: 0, y: 0 };
+
+    const formData = new FormData();
+    formData.append('_action', 'easterEggVoice');
+    formData.append('sceneId', sceneId);
+    formData.append('xcoordinate', 0);
+    formData.append('ycoordinate', 0);
+    formData.append('coordinates.x', safeCoordinates.x);
+    formData.append('coordinates.y', safeCoordinates.y);
+    clickFetcher.submit(formData, { method: 'post' });
+  };
+
+  useEffect(() => {
+    if (!clickFetcher.data || clickFetcher.state !== 'idle') return;
+    const data = clickFetcher.data;
+
+    switch (data.type) {
+      case 'voice_url':
+        setVoiceModalUrl(data.url);
+        break;
+      case 'no_voice':
+        break;
+      case 'message':
+        break;
+      default:
+        console.warn("알 수 없는 clickFetcher 데이터 타입:", data.type);
+    }
+  }, [clickFetcher.data, clickFetcher.state, setVoiceModalUrl]);
+
+
 
   return (
     <div className="book-layout">
@@ -500,7 +562,9 @@ export default function BookReader() {
                   )}
                 </>
               ) : (
-                <ReaderView currentPage={bookData} />
+                <ReaderView
+                  currentPage={bookData}
+                  onImageClick={handleImageClick} />
               )}
             </div>
 
@@ -527,7 +591,12 @@ export default function BookReader() {
           quizResult={quizResultFetcher.data}
         />
       )}
-
+      {voiceModalUrl && (
+        <EasterEggVoicePlayerModal
+          audioUrl={voiceModalUrl}
+          onClose={() => setVoiceModalUrl(null)}
+        />
+      )}
     </div>
   );
 }
@@ -552,7 +621,7 @@ export async function loader({ request, params }) {
       }
     }
 
-    if (fetchParam === "quiz") {
+    else if (fetchParam === "quiz") {
       const quizData = await inquiryAllQuiz(childAccessToken, storyId);
       console.log("퀴즈 있나", quizData.result);
       if (quizData?.isSuccess) {
@@ -561,7 +630,7 @@ export async function loader({ request, params }) {
       return [];
     }
 
-    if (fetchParam === "quizResult") {
+    else if (fetchParam === "quizResult") {
       const resultData = await responseAllQuiz(childAccessToken);
       if (resultData?.isSuccess) {
         return resultData.result || [];
@@ -571,6 +640,7 @@ export async function loader({ request, params }) {
 
     const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);
     if (bookData?.isSuccess) {
+      // console.log(bookData)
       return bookData.result;
     }
 
@@ -630,6 +700,39 @@ export async function action({ request, params }) {
     const result = await selectedAnswerQuiz(childAccessToken, quizId, selectedAnswer);
     if (result.isSuccess) {
       return result;
+    }
+  }
+  else if (actionType === "easterEggVoice") {
+    const sceneId = formData.get("sceneId");
+    const xcoordinateStr = formData.get("xcoordinate");
+    const ycoordinateStr = formData.get("ycoordinate");
+    const coordinatesXStr = formData.get("coordinates.x");
+    const coordinatesYStr = formData.get("coordinates.y");
+
+    const clickDto = {
+      xcoordinate: parseInt(xcoordinateStr, 10) || 0,
+      ycoordinate: parseInt(ycoordinateStr, 10) || 0,
+      xCoordinate: parseInt(coordinatesXStr, 10) || 0,
+      yCoordinate: parseInt(coordinatesYStr, 10) || 0,
+    };
+
+    const clickData = await clickEasterEggVoice(childAccessToken, sceneId, clickDto);
+    if (clickData?.isSuccess) {
+      const resultMessage = clickData.result;
+
+      if (resultMessage === '이곳에는 음성이 없네요. 다른 장면을 눌러 숨겨진 목소리를 찾아볼까요?') {
+        return { type: 'no_voice', message: resultMessage };
+      }
+      if (typeof resultMessage === 'string' &&
+        (resultMessage.startsWith('http') ||
+          resultMessage.endsWith('.mp3') ||
+          resultMessage.endsWith('.wav'))) {
+        return { type: 'voice_url', url: resultMessage };
+      }
+      return { type: 'message', text: resultMessage || "" };
+
+    } else {
+      return { type: 'error', message: clickData?.message || 'API 호출 실패' }, { status: 400 };
     }
   }
 }

@@ -1,76 +1,156 @@
 const DUMMY = {
   "index": 8,
-  "url": "https://evertale-static-files.s3.ap-northeast-2.amazonaws.com/generated_images/e2ba2aa060da43cc90ea1a2b9c3221b7.png",
-    "detection": {
-    "width": 170.07526,
-    "height": 130.08115,
-    "xCoordinate": 10.08704,
-    "yCoordinate": 260.8906
+  "url": "https://evertale-static-files.s3.ap-northeast-2.amazonaws.com/generated_images/a990f8e4e480404f88920efc0bc01dfa.png",
+  "detection": {
+    "width": 167.7467803955078,
+    "height": 258.39484,
+    "xCoordinate": 520.0354,
+    "yCoordinate": 293.59863
   }
 }
 
+// "url": "https://evertale-static-files.s3.ap-northeast-2.amazonaws.com/generated_images/b6d187ce00754b949ddf237c7b375b49.png",
 // "detection": {
-//   "width": 182.07526,
-//   "height": 257.08115,
-//   "xCoordinate": 325.08704,
-//   "yCoordinate": 692.8906
+//   "width": 96.226,
+//   "height": 231.94855,
+//   "xCoordinate": 215.14238,
+//   "yCoordinate": 387.04285
 // }
 
+// "url": "https://evertale-static-files.s3.ap-northeast-2.amazonaws.com/generated_images/a990f8e4e480404f88920efc0bc01dfa.png",
+// "detection": {
+//   "width": 167.7467803955078,
+//   "height": 258.39484,
+//   "xCoordinate": 520.0354,
+//   "yCoordinate": 293.59863
 
-import { useEffect, useState } from "react";
-import { useFetcher } from "react-router";
+
+import { useEffect, useRef, useState } from "react";
+import { useFetcher, useLoaderData, useNavigate } from "react-router";
+import { detectYoloModel, registrationEasterEggVoice } from "~/api/easteregg.server";
+import { getSession } from "~/auth/auth";
 import "~/styles/easterEggVoice.css"
 
 export default function EasterEggVoice() {
-  const { xCoordinate, yCoordinate, width, height } = DUMMY.detection;
+  const detectData = useLoaderData();
+  const { xCoordinate, yCoordinate, width, height } = detectData.detection;
+  
+  const original_xmin = xCoordinate - width;
+  const original_ymin = yCoordinate - height;
+  const original_width = width * 2;
+  const original_height = height * 2;
+  const [scaledDetection, setScaledDetection] = useState();
+  const imgRef = useRef(null);
+
+  const handleImageLoad = () => {
+    if (!imgRef.current) return;
+
+    if (scaledDetection) return;
+
+    const { naturalWidth } = imgRef.current;
+    const { offsetWidth } = imgRef.current;
+
+    if (naturalWidth === 0) return;
+
+    const scaleRatio = offsetWidth / naturalWidth;
+    const scaledResult = {
+      left: original_xmin * scaleRatio,
+      top: original_ymin * scaleRatio,
+      width: original_width * scaleRatio,
+      height: original_height * scaleRatio,
+    };
+    setScaledDetection(scaledResult);
+  };
+
+  useEffect(() => {
+    if (imgRef.current) {
+      if (imgRef.current.complete) {
+        console.log("이미지 (complete: true) - 수동으로 handleImageLoad 실행");
+        handleImageLoad();
+      }
+    }
+  }, []); // 컴포넌트가 처음 마운트될 때 '한 번만' 실행
+
+  // 이미지 로드 실패 시 콘솔에 에러띄우기
+  const handleImageError = () => {
+    console.error("이미지 로드 실패! URL을 확인하세요:", DUMMY.url);
+  };
+
+
+
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isVoiceRegistered, setIsVoiceRegistered] = useState(false);
-
+  const navigate = useNavigate();
 
   const handleRegistrationSuccess = () => {
     setIsVoiceRegistered(true); // 음성 등록 상태를 true로 변경
     setIsVoiceModalOpen(false); // 모달 닫기
   };
 
+  const handleBack = () => {
+    navigate(`/easter`);
+  };
+
   return (
     <div className="easteregg-voice-container">
-      <p>들려줄 음성메세지를 추가해주세요.<br />
-        네모칸에 메세지가 저장됩니다!</p>
+      <p>들려줄 음성메세지를 추가해주세요. {detectData.index}페이지의 해당 네모칸에 메세지가 저장됩니다.<br />
+        아이가 책을 읽다가 해당 부분을 누르면 사랑의 음성 메세지가 나와요!</p>
       <div className="easteregg-image-wrapper">
-        <img src={DUMMY.url} alt="easteregg-voice-image" />
-        <div
-          className="easteregg-bounding-box"
-          style={{
-            left: `${xCoordinate}px`,
-            top: `${yCoordinate}px`,
-            width: `${width}px`,
-            height: `${height}px`
-          }}
-        ></div>
+        <img
+          ref={imgRef}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          src={detectData.url}
+          alt="easteregg-voice-image"
+        />
+
+        {scaledDetection && (
+          <div
+            className="easteregg-bounding-box"
+            style={{
+              left: `${scaledDetection.left}px`,
+              top: `${scaledDetection.top}px`,
+              width: `${scaledDetection.width}px`,
+              height: `${scaledDetection.height}px`
+            }}
+          ></div>
+        )}
+
         <div className="easteregg-voice-register">
+          <button
+            className="easteregg-voice-back-btn"
+            onClick={handleBack}
+          >취소</button>
           <button
             className="easteregg-voice-submit-btn"
             onClick={() => setIsVoiceModalOpen(true)}
             disabled={isVoiceRegistered}
           >
-            {isVoiceRegistered ? '음성 등록 완료' : '음성 녹음'}
+            {isVoiceRegistered ? '음성 등록 완료' : '음성 메세지 등록'}
           </button>
         </div>
       </div>
       {isVoiceModalOpen && (
-        <VoiceRegistrationModal
+        <EasterEggVoiceRegistrationModal
           onClose={() => setIsVoiceModalOpen(false)}
           onSuccess={handleRegistrationSuccess}
+          index={detectData.index}
+          detection={detectData.detection}
         />
       )}
     </div>
   );
 }
 
+
 // 음성 등록 모달 컴포넌트
-function VoiceRegistrationModal({ onClose, onSuccess }) { // onSuccess prop 추가
+function EasterEggVoiceRegistrationModal({ onClose, onSuccess, index, detection }) { // onSuccess prop 추가
   const [fileName, setFileName] = useState('');
 
+  const requestDto = {
+    index: index,
+    detection: detection, 
+  };
   // 사용자가 파일을 선택했을 때 실행되는 함수
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -84,14 +164,14 @@ function VoiceRegistrationModal({ onClose, onSuccess }) { // onSuccess prop 추�
   const isSubmitting = fetcher.state === 'submitting';
 
   // 등록 성공 시(isSuccess가 true가 될 때) 실행되는 Effect
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        onSuccess(); // onClose 대신 onSuccess를 호출하여 부모 상태 변경
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isSuccess, onSuccess]); // 의존성 배열에 onSuccess 추가
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     const timer = setTimeout(() => {
+  //       onSuccess(); // onClose 대신 onSuccess를 호출하여 부모 상태 변경
+  //     }, 1500);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isSuccess, onSuccess]); // 의존성 배열에 onSuccess 추가
 
   return (
     <div className="modal-overlay">
@@ -104,12 +184,13 @@ function VoiceRegistrationModal({ onClose, onSuccess }) { // onSuccess prop 추�
               <h2>이스터에그 등록하기</h2>
               <p>사랑의 음성메세지를 등록해주세요!<br />마이크를 가까이 두고 10초 이내로 녹음해 주세요.</p>
             </div>
+            
             <div className="voice-upload-wrapper">
               <p className="upload-label-text">
                 <h5>업로드할 음성 파일 (.wav, .mp3)</h5>
               </p>
               <fetcher.Form method="post" encType="multipart/form-data">
-                <input type="hidden" name="_action" value="registrationVoice" />
+                <input type="hidden" name="_action" value="registrationEasterEggVoice" />
                 <div className="upload-box">
                   <input
                     id="voice-file-upload"
@@ -120,6 +201,11 @@ function VoiceRegistrationModal({ onClose, onSuccess }) { // onSuccess prop 추�
                     style={{ display: 'none' }}
                     required
                   />
+                  <input 
+                  type="hidden" 
+                  name="requestDto" 
+                  value={JSON.stringify(requestDto)} 
+                />
                   <label htmlFor="voice-file-upload" className="upload-button">
                     파일 찾기
                   </label>
@@ -127,7 +213,6 @@ function VoiceRegistrationModal({ onClose, onSuccess }) { // onSuccess prop 추�
                 </div>
                 <div className="modal-buttons">
                   <button type="button" onClick={onClose}>취소</button>
-                  {/* 파일이 선택되지 않으면 등록 버튼 비활성화 */}
                   <button type="submit" disabled={isSubmitting || !fileName}>
                     {isSubmitting ? '등록 중...' : '등록'}
                   </button>
@@ -146,6 +231,55 @@ function SuccessView() {
     <div className="success-view">
       <h3>등록 완료!</h3>
       <p>이스터에그에 음성메세지가 성공적으로 등록되었어요!</p>
+      <div className="easteregg-complete-btn">
+        보러가기
+      </div>
     </div>
   );
 }
+
+
+export async function loader({ request, params }) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const childAccessToken = session.get("childAccessToken");
+  const storyId = params.storyId;
+
+  if (!childAccessToken) return redirect(`/mypage/login`);
+
+  const detectData = await detectYoloModel(childAccessToken, storyId);
+  if (detectData?.isSuccess) {
+    return detectData.result || [];
+  }
+}
+
+
+export async function action({ request, params }) {
+  const { storyId } = params;
+  const session = await getSession(request.headers.get("Cookie"));
+  if (!session.has("childAccessToken")) return redirect("/mypage/login");
+  const childAccessToken = session.get("childAccessToken");
+
+  const formData = await request.formData();
+  const actionType = formData.get("_action");
+
+  // actionType에 따라 분기 처리
+  if (actionType === 'registrationEasterEggVoice') {
+    const voiceFile = formData.get("voiceFile");
+    const requestDto_string = formData.get("requestDto");
+
+    console.log(requestDto_string)
+    let requestDto = null;
+    try {
+      requestDto = JSON.parse(requestDto_string);
+    } catch (e) {
+      // JSON 파싱 실패 시 에러 처리
+      return { success: false, message: "잘못된 요청 데이터입니다. (JSON 파싱 실패)" };
+    }
+
+    const result = await registrationEasterEggVoice(childAccessToken, voiceFile, storyId, requestDto);
+    if (result.isSuccess) {
+      return { success: true, message: "목소리가 성공적으로 등록되었습니다." };
+    }
+  }
+}
+

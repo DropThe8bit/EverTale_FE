@@ -40,6 +40,8 @@ export async function loader({ request }) {
 
     if (myProfileDataResult?.isSuccess) {
       const myProfileDataSummaries = myProfileDataResult?.result || [];
+      console.log(myProfileDataSummaries);
+
       return { username, profileData: myProfileDataSummaries };
 
     } else {

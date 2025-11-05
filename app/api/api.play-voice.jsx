@@ -16,7 +16,7 @@ export async function loader({ request }) {
   const sceneId = url.searchParams.get('sceneId');
 
   try {
-    // ❗ createVoiceNarration이 fetch의 Response 객체를 그대로 반환한다고 가정합니다.
+    // createVoiceNarration이 fetch의 Response 객체를 그대로 반환한다고 가정합니다.
     const apiResponse = await createVoiceNarration(childAccessToken, voiceId, storyId, sceneId);
 
     if (!apiResponse.ok) {
