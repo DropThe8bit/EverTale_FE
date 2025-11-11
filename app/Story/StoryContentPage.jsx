@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { redirect, useActionData, useFetcher, useLoaderData, useLocation, useNavigate, useParams, useSubmit } from 'react-router';
+import { redirect, useActionData, useFetcher, useLoaderData, useLocation, useNavigate, useParams, useSearchParams, useSubmit } from 'react-router';
 import { createNextSceneQuestion, createNextStoryfromAnswer, createSceneImage, setStoryTitle, updateSceneStory } from '~/api/story.server';
 import { commitSession, getSession } from '~/auth/auth';
 import "~/styles/storyContent.css";
@@ -107,6 +107,7 @@ function LoadingModal() {
 export default function StoryContentPage() {
   const location = useLocation();
   const { storyId, pageNum } = useParams(); // URL에서 현재 페이지 번호를 가져옵니다. (예: '1', '2'...)
+  const [searchParams] = useSearchParams();
 
   const currentStoryText = useLoaderData(); // loader가 제공하는 페이지의 줄거리
   const [isCurrentStoryText, setCurrentStoryText] = useState(currentStoryText);
@@ -280,7 +281,7 @@ export default function StoryContentPage() {
 
           </imageGenerator.Form>
           <button className="story-conetent-submit-btn" onClick={handleFetchQuestionorSetTitle} disabled={isNextQuestion} >
-          {isNextQuestion && <LoadingModal />}
+            {isNextQuestion && <LoadingModal />}
 
             {currentPageNumber < 8 ? '다음으로 넘어가기' : '이야기 완성하기'}
           </button>
@@ -364,11 +365,20 @@ export async function action({ request, params }) {
     const nextPageNum = parseInt(pageNum, 10) + 1;
     const newStoryResult = await createNextStoryfromAnswer(childAccessToken, storyId, nextPageNum, question, answer);
 
+    const url = new URL(request.url);
+    const userParam = url.searchParams.get("user");
+    
     if (newStoryResult.isSuccess) {
       session.flash("StoryResult", newStoryResult.result);
-      return redirect(`/story/${storyId}/${nextPageNum}`, {
+
+      let redirectPath = `/story/${storyId}/${nextPageNum}`;
+      if (userParam === "child") {
+        redirectPath += `?user=child`;
+      }
+      return redirect(redirectPath, {
         headers: { "Set-Cookie": await commitSession(session) },
       });
+  
     } else {
       return { error: newStoryResult.message };
     }
@@ -382,4 +392,3 @@ export async function action({ request, params }) {
 
   return { error: "알 수 없는 요청입니다." };
 }
-

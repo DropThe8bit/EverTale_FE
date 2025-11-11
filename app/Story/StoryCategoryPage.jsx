@@ -32,12 +32,11 @@ export default function StoryCategoryPage() {
   const [characterName, setCharacterName] = useState("");
 
   useEffect(() => {
-    // 페이지가 브라우저에 로드된 후에 이 코드가 실행됩니다.
     const name = searchParams.get('char');
     if (name) {
       setCharacterName(name);
     }
-  }, [searchParams]); // searchParams가 변경될 때마다 실행
+  }, [searchParams]); 
 
   const navigation = useNavigation();
   const isLoading = navigation.state === 'submitting';
@@ -126,6 +125,9 @@ function StoryPreviewModal({ onClose }) {
 export async function action({ request, params }) {
   const session = await getSession(request.headers.get("Cookie"));
   const token = session.get("childAccessToken");
+  const url = new URL(request.url);
+  const userParam = url.searchParams.get("user");
+
   if (!token) {
     return redirect(`/mypage/login`);
   }
@@ -150,7 +152,11 @@ export async function action({ request, params }) {
     session.flash("StoryResult", result.result);
     console.log(result.result)
 
-    return redirect(`/story/${storyId}/1`, {
+    let redirectPath = `/story/${storyId}/1`;
+    if (userParam === "child") {
+      redirectPath += `?user=child`;
+    }
+    return redirect(redirectPath, {
       headers: { "Set-Cookie": await commitSession(session) },
     });
   } else {
@@ -158,4 +164,3 @@ export async function action({ request, params }) {
     return { error: result?.message || "초기 줄거리 생성에 실패했습니다." };
   }
 }
-

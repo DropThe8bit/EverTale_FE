@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, redirect, useActionData, useNavigate, useNavigation, useParams } from "react-router";
+import { Form, redirect, useActionData, useNavigate, useNavigation, useParams, useSearchParams } from "react-router";
 // import { json, unstable_parseMultipartFormData, unstable_createMemoryUploadHandler } from "@remix-run/node"; // Remix 유틸리티를 @remix-run/node 에서 가져옵니다.
 import { getSession } from '~/auth/auth';
 import { createCharacter } from "~/api/story.server";
@@ -170,8 +170,11 @@ export default function StoryCharacterCreator() {
 
 function CharacterPreviewModal({ isLoading, imageUrl, storyId, onClose, characterName }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isChildUser = searchParams.get("user") == "child";
+
   const handleConfirm = () => {
-    navigate(`/story/${storyId}/category?char=${characterName}`);
+    navigate(`/story/${storyId}/category?char=${characterName}&${isChildUser ? '&user=child' : ''}`);
   };
   return (
     <div className="modal-overlay">
