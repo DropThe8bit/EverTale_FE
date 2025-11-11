@@ -127,6 +127,11 @@ a {
   transition: transform 0.2s ease;
 }
 
+.book-card:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease;
+}
+
 /* 책 이미지 */
 .book-card img {
   width: auto;

@@ -106,7 +106,7 @@
   width: 100%;
   max-width: 945px;
   background-color: var(--color-primary-10);
-  margin: 0 auto 25px;
+  margin: 0 auto 20px;
 }
 
 
@@ -155,6 +155,11 @@
   min-height: 230px;
   max-height: 240px;
   margin: 0;
+  transition: transform 0.2s ease;
+}
+
+.easteregg-book-card:hover {
+  transform: scale(1.02);
   transition: transform 0.2s ease;
 }
 

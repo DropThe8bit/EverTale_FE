@@ -75,16 +75,19 @@
 /* 책 카드 리스트 */
 .mybook-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, 190px);
   grid-auto-rows: repeat(auto-fit, minmax(240px, auto));
-  justify-content: center;
+  justify-content: flex-start;
+  text-align: left;
   column-gap: 45px;
   row-gap: 35px;
   width: 100%;
+  margin: 0;
 }
 
 /* 각 책 카드 */
 .mybook-card {
+  display: flex;
   position: relative;
   overflow: hidden;
   border-radius: 16px;
@@ -93,8 +96,14 @@
   max-width: 200px;
   min-height: 230px; 
   max-height: 240px;
-  margin: 0 auto;
+  margin: 0;
   transition: transform 0.2s ease;
+}
+
+.mybook-card:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 /* 책 이미지 */
@@ -170,9 +179,9 @@
 /* 주인공 카드 리스트 */
 .mycharacter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, 190px);
   grid-auto-rows: repeat(auto-fit, minmax(240px, auto));
-  justify-content: center;
+  justify-content: flex-start;
   column-gap: 45px;
   row-gap: 35px;
   width: 100%;
@@ -186,6 +195,12 @@
   min-width: 190px;
   max-width: 201px;
   margin: 0 auto;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.mycharacter-card:hover {
+  transform: translateY(-3px);
   transition: transform 0.2s ease;
   cursor: pointer;
 }
