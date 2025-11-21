@@ -213,6 +213,31 @@ export async function accessProfileToken(profileId, token) {
   }
 }
 
+// export async function accessRefreshToken(profileId, token) {
+//   try {
+//     const response = await fetch(
+//       `${API_BASE_URL}/api/auth/profiles/reissue${profileId}`, 
+//       {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${token}`
+//         },
+//       }
+//     );
+
+//     if (!response.ok) {
+//       const errorData = await response.json().catch(() => ({}));
+//       throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+//     }
+
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Failed to sign up:", error);
+//     return null;
+//   }
+// }
+
 export async function accessMyProfileInfo(token) {
   try {
     const response = await fetch(
