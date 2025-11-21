@@ -214,10 +214,9 @@ export async function loader({ request, params }) {
 
   if (!childAccessToken) return redirect(`/mypage/login`);
 
-
   const detectData = await detectYoloModel(childAccessToken, storyId);
   if (detectData?.isSuccess) {
-    return { username, detectData: detectData.result || [] };
+    return { username , detectData: detectData.result || [] };
   }
 }
 

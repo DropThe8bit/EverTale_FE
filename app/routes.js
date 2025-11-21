@@ -13,7 +13,7 @@ export default [
     route("/easter/voice/:storyId", "./EasterEgg/EasterEggVoice.jsx"),
     route("/easter/letter/:storyId", "./EasterEgg/EasterEggLetter.jsx"),
 
-    route("/mybook", "./Mybook/Mybook.jsx"),
+    route("/mybook", "./Mybook/Mybook.jsx"), 
 
     route("/mypage/signup", "./Mypage/SignUpPage.jsx"),
     route("/mypage/login", "./Mypage/LoginPage.jsx"),
@@ -27,10 +27,6 @@ export default [
   layout("./Layouts/IndexNavSimple.jsx", [
     route("/mybook/bookview/:storyId/:pageNum", "./BookReader/BookReader.jsx"), // 책읽기 화면, 퀴즈 화면
     route("/play-voice", "./BookReader/play-voice.jsx"),
-
-    // // 이스터에그 포함된 나의 책 읽기
-    // route("/mybook/:gid", "./Book/BookPage.jsx", { id: "mybook-reader" }),
-    // route("/mybook/quiz/:gid", "./Book/QuizPage.jsx", { id: "mybook-quiz" })
   ]),
 
   layout("./Layouts/IndexNavSide.jsx", [ // 마이페이지

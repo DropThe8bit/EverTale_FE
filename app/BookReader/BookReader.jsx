@@ -9,14 +9,6 @@ import { createQuiz, inquiryAllQuiz, readingStoryPage, responseAllQuiz, selected
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
 import { clickEasterEggVoice, showEasterWggLetter } from '~/api/easteregg.server';
 
-const LETTERS = [
-  { imageNum: 1, imgSrc: '/images/easteregg_letter_1.png' },
-  { imageNum: 2, imgSrc: '/images/easteregg_letter_2.png' },
-  { imageNum: 4, imgSrc: '/images/easteregg_letter_4.png' },
-  { imageNum: 5, imgSrc: '/images/easteregg_letter_5.png' },
-  { imageNum: 6, imgSrc: '/images/easteregg_letter_6.png' },
-  { imageNum: 7, imgSrc: '/images/easteregg_letter_7.png' },
-];
 
 function VoiceRegistrationModal({ onClose }) {
   const [fileName, setFileName] = useState('');
@@ -210,7 +202,7 @@ function LetterModal({ letterData, onConfirm }) {
               <img src="/images/arrive_letter.png" alt="arrive_letter" />
             </button>
             <div className="preview-letter-content">
-              <p>편지가 도착했어요!<br/>클릭해서 편지를 열어주세요.</p>
+              <p>편지가 도착했어요!<br />클릭해서 편지를 열어주세요.</p>
             </div>
           </div>
         </div>
@@ -252,7 +244,7 @@ function LetterModal({ letterData, onConfirm }) {
 
 export default function BookReader() {
   const navigate = useNavigate();
-  const bookData = useLoaderData();
+  const { username, bookData } = useLoaderData();
   const { storyId, pageNum } = useParams();
   const sceneId = bookData.sceneId;
   const currentPageNumber = parseInt(pageNum, 10);
@@ -323,11 +315,13 @@ export default function BookReader() {
     if (currentPageNumber < 8) {
       navigate(`/mybook/bookview/${storyId}/${nextPage}?${params.toString()}`);
     } else if (currentPageNumber >= 8) {
-      if (finalLetterContent) {
-        // [Case 1] 마지막 편지가 존재함: 편지 모달을 먼저 띄움
-        setIsShowLetterModal(true);
+      if (author === username) { // 내 책일때만 이스터에그 볼 수 있음.
+        if (finalLetterContent) {
+          // 마지막 편지가 존재함 -> 편지 모달을 먼저 띄움
+          setIsShowLetterModal(true);
+        }
       } else {
-        // [Case 2] 마지막 편지가 없거나 미공개일: 엔딩 모달을 바로 띄움
+        // [마지막 편지가 없거나 미공개일 -> 엔딩 모달을 바로 띄움
         setShowEndingModal(true);
       }
     }
@@ -523,17 +517,18 @@ export default function BookReader() {
 
   // 자식 컴포넌트(StoryReaderView)에 prop으로 전달할 함수
   const handleImageClick = (coordinates) => {
-    // coordinates가 null일 경우 기본값 0으로 처리
-    const safeCoordinates = coordinates || { x: 0, y: 0 };
-    console.log(safeCoordinates)
-    const formData = new FormData();
-    formData.append('_action', 'easterEggVoice');
-    formData.append('sceneId', sceneId);
-    formData.append('xcoordinate', 0);
-    formData.append('ycoordinate', 0);
-    formData.append('coordinates.x', safeCoordinates.x);
-    formData.append('coordinates.y', safeCoordinates.y);
-    clickFetcher.submit(formData, { method: 'post' });
+    if (author === username) { // 내 책일때만 이스터에그 볼 수 있음.
+      // coordinates가 null일 경우 기본값 0으로 처리
+      const safeCoordinates = coordinates || { x: 0, y: 0 };
+      const formData = new FormData();
+      formData.append('_action', 'easterEggVoice');
+      formData.append('sceneId', sceneId);
+      formData.append('xcoordinate', 0);
+      formData.append('ycoordinate', 0);
+      formData.append('coordinates.x', safeCoordinates.x);
+      formData.append('coordinates.y', safeCoordinates.y);
+      clickFetcher.submit(formData, { method: 'post' });
+    }
   };
 
   useEffect(() => {
@@ -718,6 +713,8 @@ export default function BookReader() {
 export async function loader({ request, params }) {
   const session = await getSession(request.headers.get("Cookie"));
   const childAccessToken = session.get("childAccessToken");
+  const username = session.get("username");
+
   const storyId = params.storyId;
   const pageNum = params.pageNum;
   const url = new URL(request.url);
@@ -751,7 +748,8 @@ export async function loader({ request, params }) {
       return [];
     }
 
-    if (fetchParam === "showLetter") {
+
+    else if (fetchParam === "showLetter") {
       const letterData = await showEasterWggLetter(childAccessToken, storyId);
       console.log("편지 결과", letterData.result);
       if (letterData?.isSuccess && letterData.result) {
@@ -770,7 +768,7 @@ export async function loader({ request, params }) {
     const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);
     if (bookData?.isSuccess) {
       // console.log(bookData)
-      return bookData.result;
+      return { username, bookData: bookData.result };
     }
 
   } catch (error) {
