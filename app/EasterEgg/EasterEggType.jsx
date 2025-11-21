@@ -1,22 +1,12 @@
-// const filteredStories = [
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "1소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "2소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "3소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "4소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "5소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "6소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "7소연이와 다락방" },
-//   { storyId: 1, imageUrl: "/images/fairy.png", title: "8소연이와 다락방" },
-// ]
 
 import { useEffect, useRef, useState } from "react";
 import { Form, Link, redirect, useLoaderData, useNavigate, useSubmit } from "react-router";
-import { inquiryGetCreatableMessageEasterEggBooks, inquiryGetCreatableVoiceEasterEggBooks, inquiryGetCreatedMessageEasterEggBooks, inquiryGetCreatedVoiceEasterEggBooks } from "~/api/easteregg.server";
+import { inquiryGetCreatableLetterEasterEggBooks, inquiryGetCreatableVoiceEasterEggBooks, inquiryGetCreatedLetterEasterEggBooks, inquiryGetCreatedVoiceEasterEggBooks } from "~/api/easteregg.server";
 import { getSession } from "~/auth/auth";
 import "~/styles/easterEgg.css"
 
 export default function EasterEggType() {
-  const { voiceSummaries, completeVoiceSummaries, messageSummaries, completeMessageSummaries } = useLoaderData();
+  const { voiceSummaries, completeVoiceSummaries, letterSummaries, completeLetterSummaries } = useLoaderData();
   // const voiceSummaries = voiceSummaries.filter(book => {
   //   return book && book.storyId && book.imageUrl && book.title;
   // });
@@ -56,7 +46,7 @@ export default function EasterEggType() {
 
   // selectedType 또는 selectedStoryId가 변경될 때마다 실행
   useEffect(() => {
-    // 4. 첫 렌더링 시에는 실행 방지
+    // 첫 렌더링 시에는 실행 방지
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
@@ -78,11 +68,11 @@ export default function EasterEggType() {
     completeSummaries = completeVoiceSummaries.filter(book => {
       return book && book.storyId && book.imageUrl && book.title;
     });
-  } else if (selectedType === 'message') {
-    summaries = messageSummaries.filter(book => {
+  } else if (selectedType === 'letter') {
+    summaries = letterSummaries.filter(book => {
       return book && book.storyId && book.imageUrl && book.title;
     });
-    completeSummaries = completeMessageSummaries.filter(book => {
+    completeSummaries = completeLetterSummaries.filter(book => {
       return book && book.storyId && book.imageUrl && book.title;
     });
   }
@@ -109,16 +99,16 @@ export default function EasterEggType() {
             <img src="/images/hidden_message.png" alt="hidden voice" />
             <p>숨은 메세지 찾기</p>
           </label>
-          <label className={`easteregg-type ${selectedType === 'message' ? 'selected' : ''}`}>
+          <label className={`easteregg-type ${selectedType === 'letter' ? 'selected' : ''}`}>
             <input
               type="radio"
               name="type"
-              value="message"
-              checked={selectedType === 'message'}
+              value="letter"
+              checked={selectedType === 'letter'}
               onChange={(e) => setSelectedType(e.target.value)}
               style={{ display: 'none' }}
             />
-            <img src="/images/love_letter.png" alt="hidden message" />
+            <img src="/images/love_letter.png" alt="hidden Letter" />
             <p>사랑의 편지</p>
           </label>
         </div>
@@ -239,20 +229,20 @@ export async function loader({ request }) {
   ] = await Promise.all([
     inquiryGetCreatedVoiceEasterEggBooks(childAccessToken, profileId),
     inquiryGetCreatableVoiceEasterEggBooks(childAccessToken, profileId),
-    inquiryGetCreatedMessageEasterEggBooks(childAccessToken, profileId),
-    inquiryGetCreatableMessageEasterEggBooks(childAccessToken, profileId),
+    inquiryGetCreatedLetterEasterEggBooks(childAccessToken, profileId),
+    inquiryGetCreatableLetterEasterEggBooks(childAccessToken, profileId),
   ]);
 
   const voiceSummaries = easterEggVoiceStories?.result?.easterEggVoiceStories?.storySummaries || [];
   const completeVoiceSummaries = completeEasterEggVoiceStories?.result?.easterEggVoiceStories?.storySummaries || [];
-  const messageSummaries = easterEggMessageStories?.result?.easterEggVoiceStories?.storySummaries || [];
-  const completeMessageSummaries = completeEasterEggMessageStories?.result?.easterEggVoiceStories?.storySummaries || [];
+  const letterSummaries = easterEggMessageStories?.result?.easterEggVoiceStories?.storySummaries || [];
+  const completeLetterSummaries = completeEasterEggMessageStories?.result?.easterEggVoiceStories?.storySummaries || [];
 
   return {
     voiceSummaries: voiceSummaries,
     completeVoiceSummaries: completeVoiceSummaries,
-    messageSummaries: messageSummaries,
-    completeMessageSummaries: completeMessageSummaries,
+    letterSummaries: letterSummaries,
+    completeLetterSummaries: completeLetterSummaries,
     view: 'eastereggstories'
   };
 }
