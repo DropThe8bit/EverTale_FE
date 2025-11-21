@@ -476,7 +476,8 @@
 .quiz-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-around; /* 요소들을 위/중간/아래로 분산 */
+  justify-content: space-around;
+  /* 요소들을 위/중간/아래로 분산 */
   align-items: center;
   box-sizing: border-box;
   height: 100%;
@@ -494,9 +495,10 @@
 .quiz-options-list {
   display: flex;
   flex-direction: column;
-  width: 85%; /* 버튼 너비 */
+  width: 85%;
+  /* 버튼 너비 */
   max-width: 400px;
-  gap: 12px; 
+  gap: 12px;
 }
 
 .quiz-option-button {
@@ -504,12 +506,12 @@
   padding: 10px 20px;
   border-radius: 12px;
   border: none;
-  background-color: #ffffff; 
-  color: #333; 
+  background-color: #ffffff;
+  color: #333;
   font-family: 'BM Jua';
   font-size: 16px;
   font-weight: 400;
-  text-align: left; 
+  text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -522,21 +524,25 @@
 
 
 .quiz-option-button.selected {
-  background-color: #8DAE6E; /* 이미지의 초록색과 유사하게 */
-  color: #ffffff; 
+  background-color: #8DAE6E;
+  /* 이미지의 초록색과 유사하게 */
+  color: #ffffff;
   font-weight: 400;
 }
 
 .quiz-navigation {
   display: flex;
-  justify-content: space-between; /* 양쪽 끝으로 분산 */
+  justify-content: space-between;
+  /* 양쪽 끝으로 분산 */
   width: 80%;
   max-width: 400px;
-  gap: 15px; /* 버튼 사이 간격 */
+  gap: 15px;
+  /* 버튼 사이 간격 */
 }
 
 .quiz-nav-button {
-  flex-basis: 48%; /* 버튼이 공간을 나눠 가짐 */
+  flex-basis: 48%;
+  /* 버튼이 공간을 나눠 가짐 */
   padding: 10px 20px;
   border-radius: 12px;
   border: none;
@@ -558,28 +564,134 @@
   cursor: not-allowed;
 }
 
-.modal-guide{
+.modal-guide {
   margin: 20px 10px;
 }
 
-.modal-guide img{
+.modal-guide img {
   height: 150px;
   margin-bottom: 20px;
 }
 
 .modal-close-button {
   position: absolute;
-  top: 10px;    
-  right: 15px;    
+  top: 10px;
+  right: 15px;
   background: none;
   border: none;
-  font-size: 28px; 
+  font-size: 28px;
   font-weight: bold;
-  color: #aaa;     
+  color: #aaa;
   cursor: pointer;
-  line-height: 1;   
+  line-height: 1;
   padding: 0;
 }
+
 .modal-close-button:hover {
   color: #000;
+}
+
+.letter-preview-modal-layout {
+  padding: 15px 10px 60px;
+  width: 400px;
+  text-align: center;
+  font-family: 'Inter';
+  position: relative;
+  background-color: transparent;
+}
+
+.letter-image-button {
+  text-align: center;
+  position: relative;
+  background: none; 
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.letter-image-button img {
+  width: 60%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.preview-letter-content {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px;
+}
+
+.preview-letter-content p {
+  font-size: 18px;
+}
+
+
+.letter-modal-layout {
+  padding: 15px 10px 60px;
+  width: 965px;
+  text-align: center;
+  font-family: 'Inter';
+  position: relative;
+}
+
+.letter-modal-layout h2 {
+  margin: 10px;
+  color: white;
+}
+
+.letter-modal-content {
+  position: relative;
+  width: 945px;
+  height: auto;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.letter-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.letter-content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 27%;
+  height: 40%;
+  margin-left: 350px;
+  margin-top: 160px;
+
+  padding: 30px;
+  color: #333;
+  font-family: 'BM Jua';
+  font-size: 20px;
+  line-height: 1.6;
+  text-align: center;
+  z-index: 10;
+}
+
+.letter-modal-buttons {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+}
+
+.confirm-letter-btn {
+  padding: 10px 100px;
+  background-color: #8DAE6E;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
 }

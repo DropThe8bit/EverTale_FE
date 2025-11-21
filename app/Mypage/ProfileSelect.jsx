@@ -141,6 +141,10 @@ export async function action({ request }) {
         session.set("childAccessToken", newChildToken);
         console.log("자녀접속토큰:", result)
 
+         // 리프레쉬 토큰 저장
+         const refreshToken = result.result.accessToken;
+         session.set("refreshAccessToken", refreshToken);
+
         // 부모 <-> 자녀 UI분기
         if (result.result.profileType == "CHILD") {
           session.set("profileId", profileId);

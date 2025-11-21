@@ -1,0 +1,196 @@
+.easteregg-letter-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  margin: 168px auto;
+  max-width: 945px;
+  padding: 30px 20px;
+}
+
+.easteregg-letter-container p {
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #3C3C3C;
+}
+
+.easteregg-letter-container span {
+  font-size: 24px;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #3C3C3C;
+}
+
+.easteregg-letter-image-background {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  min-height: 400px;
+  align-items: center;
+  gap: 20px;
+  width: 1000px;
+}
+
+
+.easteregg-letter-image-background img {
+  width: 845px;
+  height: 450px;
+  object-fit: contain;
+  justify-content: center;
+
+}
+
+.nav-arrow {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+
+.easteregg-text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.letter-input-box {
+  width: 20.5%;
+  height: 40%;
+  padding: 10px;
+  margin-left: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: rgba(234, 229, 226, 0.5);
+  resize: none;
+  /* 사용자가 크기를 조절할 수 없도록 설정 */
+  font-size: 16px;
+  line-height: 1.3;
+  color: #333;
+  z-index: 100;
+}
+
+.easteregg-available-time-setting {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.easteregg-available-time-setting strong {
+  font-size: 18px;
+  color: #333;
+  font-family: 'Inter';
+}
+
+.easteregg-available-time-setting .time-inputs input[type="date"] {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 18px;
+  width: 250px;
+  height: 35px;
+  text-align: center;
+}
+
+.easteregg-letter-register {
+  justify-self: center;
+  margin: 20px auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.easteregg-letter-back-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
+}
+
+.easteregg-letter-submit-btn {
+  align-self: flex-end;
+  padding: 12px 24px;
+  background-color: #8DAE6E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 350px;
+  text-align: center;
+  font-family: 'Inter';
+  position: relative;
+}
+
+.modal-content h3 {
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  font-size: 16px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.easteregg-complete-btn {
+  align-self: flex-end;
+  padding: 10px 20px;
+  background-color: #8DAE6E;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
+}

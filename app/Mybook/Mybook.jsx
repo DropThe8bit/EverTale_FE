@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 
 function ProfileModal({ character, onClose }) {
-  console.log("모달에 전달된 character 데이터:", character.reult);
+  // console.log("모달에 전달된 character 데이터:", character.reult);
   if (!character) {
     return null;
   }
@@ -82,9 +82,7 @@ export default function MybookCollection() {
   return (
     <div className="mybook-page">
       <h1>{username}님의 책장에 </h1><h1>오신것을 환영합니다</h1>
-
       <div className="mybook-tab-wrapper">
-
         <div className="mybook-tab-bar">
           <Link to={storyLink}>
             <div className={`mybook-tab-button ${!isCharacter ? "button-active" : ""}`}>
@@ -156,7 +154,6 @@ export async function loader({ request }) {
   }
 
   else {
-    console.log("스토리 목록 요청");
     const myStoryResult = await inquiryMyStory(childAccessToken, profileId);
     const storySummaries = myStoryResult?.result?.storySummaries || [];
     return { username, summaries: storySummaries, view: 'stories' };

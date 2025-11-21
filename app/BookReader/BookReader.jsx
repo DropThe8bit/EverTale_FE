@@ -7,7 +7,16 @@ import QuizView from "~/components/bookReader/QuizView"
 import { getSession } from '~/auth/auth';
 import { createQuiz, inquiryAllQuiz, readingStoryPage, responseAllQuiz, selectedAnswerQuiz } from '~/api/book.server';
 import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
-import { clickEasterEggVoice } from '~/api/easteregg.server';
+import { clickEasterEggVoice, showEasterWggLetter } from '~/api/easteregg.server';
+
+const LETTERS = [
+  { imageNum: 1, imgSrc: '/images/easteregg_letter_1.png' },
+  { imageNum: 2, imgSrc: '/images/easteregg_letter_2.png' },
+  { imageNum: 4, imgSrc: '/images/easteregg_letter_4.png' },
+  { imageNum: 5, imgSrc: '/images/easteregg_letter_5.png' },
+  { imageNum: 6, imgSrc: '/images/easteregg_letter_6.png' },
+  { imageNum: 7, imgSrc: '/images/easteregg_letter_7.png' },
+];
 
 function VoiceRegistrationModal({ onClose }) {
   const [fileName, setFileName] = useState('');
@@ -35,7 +44,7 @@ function VoiceRegistrationModal({ onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {!isSuccess ? (
+        {isSuccess ? (
           <SuccessView />
         ) : (
           <>
@@ -183,6 +192,62 @@ function EasterEggVoicePlayerModal({ audioUrl, onClose }) {
   );
 }
 
+function LetterModal({ letterData, onConfirm }) {
+  const { content, imageNum } = letterData;
+  const imagePath = `/images/easteregg_letter_${imageNum}.png`;
+  const [isClick, setIsClick] = useState(false);
+
+  return (
+    <>
+      {!isClick ? (
+        <div className="modal-overlay">
+          <div className="letter-preview-modal-layout">
+            <button
+              type="button"
+              className="letter-image-button"
+              onClick={() => setIsClick(true)}
+            >
+              <img src="/images/arrive_letter.png" alt="arrive_letter" />
+            </button>
+            <div className="preview-letter-content">
+              <p>편지가 도착했어요!<br/>클릭해서 편지를 열어주세요.</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="modal-overlay">
+          <div className="letter-modal-layout">
+            <button className="modal-close-button" onClick={onConfirm}>
+              &times;
+            </button>
+            <div className="letter-modal-content">
+              <img
+                src={imagePath}
+                alt={`편지 배경 이미지 ${imageNum}`}
+                className="letter-background-image"
+              />
+              <div className="letter-content-overlay">
+                <p className="letter-text">
+                  {content.split('\n').map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                </p>
+              </div>
+            </div>
+            <div className="letter-modal-buttons">
+              <button type="button" onClick={onConfirm} className="confirm-letter-btn">
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
 
 
 export default function BookReader() {
@@ -200,6 +265,40 @@ export default function BookReader() {
 
   const isChildMode = user === "child";
   const isQuiz = currentMode === "quiz";
+
+
+
+  // =============이스터에그 사랑의 편지 관리===============
+
+  const letterFetcher = useFetcher();
+  const [isShowLetterModal, setIsShowLetterModal] = useState(false);
+  const [finalLetterContent, setFinalLetterContent] = useState(undefined); // null 대신 undefined로 초기화
+
+  useEffect(() => {
+    if (storyId && letterFetcher.state === 'idle' && finalLetterContent === undefined) {
+      letterFetcher.load(`?fetch=showLetter`);
+    }
+  }, [letterFetcher, storyId, finalLetterContent]);
+
+  useEffect(() => {
+    if (letterFetcher.data && letterFetcher.state === 'idle' && finalLetterContent === undefined) {
+      const data = letterFetcher.data;
+      if (data?.isSuccess === false) {
+        setFinalLetterContent(null);
+      } else {
+        setFinalLetterContent(data);
+      }
+    }
+  }, [letterFetcher.data, letterFetcher.state, finalLetterContent]);
+
+
+  // 편지 모달 닫고 엔딩 모달 열기
+  const handleConfirmLetter = () => {
+    setIsShowLetterModal(false); // 편지 모달 닫기
+    setShowEndingModal(true);   // 엔딩 모달 열기
+  };
+
+
 
   // ========퀴즈/읽기 모드 전환 링크==========
   const readerLink = useMemo(() => {
@@ -219,12 +318,18 @@ export default function BookReader() {
 
   // 페이지별 스토리 관리
   const handleNextPage = () => {
+    const nextPage = currentPageNumber + 1;
+    const params = new URLSearchParams({ user, title, author });
     if (currentPageNumber < 8) {
-      const nextPage = currentPageNumber + 1;
-      const params = new URLSearchParams({ user, title, author });
       navigate(`/mybook/bookview/${storyId}/${nextPage}?${params.toString()}`);
-    } else {
-      setShowEndingModal(true);
+    } else if (currentPageNumber >= 8) {
+      if (finalLetterContent) {
+        // [Case 1] 마지막 편지가 존재함: 편지 모달을 먼저 띄움
+        setIsShowLetterModal(true);
+      } else {
+        // [Case 2] 마지막 편지가 없거나 미공개일: 엔딩 모달을 바로 띄움
+        setShowEndingModal(true);
+      }
     }
   };
 
@@ -240,6 +345,7 @@ export default function BookReader() {
   const handleCloseEndingModal = () => {
     setShowEndingModal(false);
   };
+
 
 
   // ============음성 관리=============
@@ -410,7 +516,8 @@ export default function BookReader() {
   };
 
 
-  // =============이스터에그 관리===============
+
+  // =============이스터에그 객체 클릭 관리===============
   const clickFetcher = useFetcher();
   const [voiceModalUrl, setVoiceModalUrl] = useState(null);
 
@@ -418,7 +525,7 @@ export default function BookReader() {
   const handleImageClick = (coordinates) => {
     // coordinates가 null일 경우 기본값 0으로 처리
     const safeCoordinates = coordinates || { x: 0, y: 0 };
-
+    console.log(safeCoordinates)
     const formData = new FormData();
     formData.append('_action', 'easterEggVoice');
     formData.append('sceneId', sceneId);
@@ -445,7 +552,6 @@ export default function BookReader() {
         console.warn("알 수 없는 clickFetcher 데이터 타입:", data.type);
     }
   }, [clickFetcher.data, clickFetcher.state, setVoiceModalUrl]);
-
 
 
   return (
@@ -564,7 +670,8 @@ export default function BookReader() {
               ) : (
                 <ReaderView
                   currentPage={bookData}
-                  onImageClick={handleImageClick} />
+                  onImageClick={handleImageClick}
+                />
               )}
             </div>
 
@@ -595,6 +702,12 @@ export default function BookReader() {
         <EasterEggVoicePlayerModal
           audioUrl={voiceModalUrl}
           onClose={() => setVoiceModalUrl(null)}
+        />
+      )}
+      {isShowLetterModal && finalLetterContent && (
+        <LetterModal
+          letterData={finalLetterContent}
+          onConfirm={handleConfirmLetter} // 모달 닫고 엔딩 모달을 띄우는 핸들러 연결
         />
       )}
     </div>
@@ -634,6 +747,22 @@ export async function loader({ request, params }) {
       const resultData = await responseAllQuiz(childAccessToken);
       if (resultData?.isSuccess) {
         return resultData.result || [];
+      }
+      return [];
+    }
+
+    if (fetchParam === "showLetter") {
+      const letterData = await showEasterWggLetter(childAccessToken, storyId);
+      console.log("편지 결과", letterData.result);
+      if (letterData?.isSuccess && letterData.result) {
+        const availableDate = new Date(letterData.result.availableAt);
+        const now = new Date();
+        const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+        const nowKSTMoment = new Date(now.getTime() + KST_OFFSET_MS); // KST맞추기
+        if (availableDate.getTime() <= nowKSTMoment.getTime()) { // 공개 날짜가 아닐 경우 반환하지 않음
+          return letterData.result || [];
+        } else return { isSuccess: false, message: "편지 공개일이 아닙니다." };
+
       }
       return [];
     }
@@ -694,7 +823,7 @@ export async function action({ request, params }) {
       console.error("action에서 퀴즈 생성 오류:", error);
     }
   }
-  else if (actionType === 'selectedAnswerQuiz') {// 해당 퀴즈번호와 정답을 입력하면 결과를 반환하는 함수
+  else if (actionType === 'selectedAnswerQuiz') {// 해당 퀴즈번호와 정답을 입력하면 결과를 반환
     const quizId = formData.get("quizId");
     const selectedAnswer = formData.get("selectedAnswer");
     const result = await selectedAnswerQuiz(childAccessToken, quizId, selectedAnswer);

@@ -2,17 +2,14 @@ const myProfileDatadummyProfile = [
   { username: "김이화", title: "전설의 이야기꾼", image: "/images/default_profile.png", password: "*********", email: "ewhacse@gmail.com", phone: "010-1234-5678", department: "햇살유치원" },
 ]
 import { Link, NavLink, Outlet, redirect, useLoaderData } from "react-router"
-
 import "~/styles/mypage.css";
-
 export default function ParentPage({ username, profile }) {
-
   return (
     <>
       <div className="mypage-top">
         <div className="my-name-card">
           <img src="/images/default_profile.png" alt={profile.name} />
-          <div className="my-title-and-name">{username}작가 부모 <br/>{profile.name}님</div>
+          <div className="my-title-and-name">{username} 작가님 부모 <br/>{profile.name}님</div>
         </div>
       </div>
 

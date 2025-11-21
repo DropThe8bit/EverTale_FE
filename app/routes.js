@@ -11,7 +11,7 @@ export default [
 
     route("/easter", "./EasterEgg/EasterEggType.jsx"), // 이스터 에그
     route("/easter/voice/:storyId", "./EasterEgg/EasterEggVoice.jsx"),
-    route("/easter/message/:storyId", "./EasterEgg/EasterEggMessage.jsx"),
+    route("/easter/letter/:storyId", "./EasterEgg/EasterEggLetter.jsx"),
 
     route("/mybook", "./Mybook/Mybook.jsx"),
 

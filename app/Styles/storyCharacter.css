@@ -12,7 +12,7 @@
 	height: 1px;
 	width: 100%;
 	max-width: 520px;
-	background-color: var(--color-primary-10);
+	background-color: var(--color-background-10);
 }
 
 /* 전체 레이아웃 */
@@ -22,7 +22,7 @@
 	padding: 30px;
 	margin-bottom: 100px;
 	max-width: 945px;
-	background-color: #fcfbf8;
+	background-color: var(--color-background-10);
 	border-radius: 12px;
 	color: #333;
 }
