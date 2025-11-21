@@ -10,6 +10,13 @@ import { loginUser } from "~/api/mypage.server";
 export default function LoginPage() {
   const actionData = useActionData();
 
+  useEffect(() => {
+    if (actionData?.error) {
+      alert(actionData.error);
+    }
+  }, [actionData]);
+
+
   return (
     <div className="login-container">
       <p>로그인</p>
@@ -39,7 +46,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </Form>
-      {actionData?.error && <p className="form-error">{actionData.error}</p>}
 
       <div className="other-login-mention">또는</div>
 
