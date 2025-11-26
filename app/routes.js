@@ -3,6 +3,7 @@ import { index, route, layout } from "@react-router/dev/routes";
 export default [
   layout("./Layouts/IndexNav.jsx", [
     index("./index.jsx"), // 모두의 책장 (무조건 로그인 후에 서비스 사용가능하다고 전제!)
+    route("/update-alarm", "./Layouts/api.update-alarm.jsx"),
 
     route("/story", "./Story/StoryIndex.jsx"), // 스토리 만들기
     route("/story/:storyId", "./Story/StoryCharacterCreator.jsx"),

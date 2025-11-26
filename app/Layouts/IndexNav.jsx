@@ -1,4 +1,4 @@
-import { useSearchParams, Outlet, useLoaderData, Link, useFetcher, useNavigate } from "react-router";
+import { useSearchParams, Outlet, useLoaderData, Link, useFetcher, useNavigate, Form } from "react-router";
 
 import NavHeader from "../components/navigation/NavHeader";
 import NavHeaderChild from "../components/navigation/NavHeaderChild"
@@ -53,7 +53,8 @@ function AlarmModal({ alarmSummaries, myName, onClose }) {
     const formData = new FormData();
     formData.append('_action', 'changeStateAlarm'); // action 분기용
     formData.append('alarmId', alarmId);
-    fetcher.submit(formData, { method: 'post', action: '/api/update-alarm' });
+    fetcher.submit(formData, { method: "post", action: "/update-alarm" });
+    console.log("보냄?")
     onClose();
     navigate(targetUrl);
   };
@@ -109,27 +110,3 @@ export async function loader({ request }) {
     return { myName: null, alarmData: { result: null } };
   }
 }
-
-// export async function action({ request }) {
-//   console.log("--- 서버: action 함수 실행 시작 ---"); // [!!!] 이 로그가 찍히는지 확인
-//   const session = await getSession(request.headers.get("Cookie"));
-//   const childAccessToken = session.get("childAccessToken");
-
-//   if (!childAccessToken) {
-//     return { success: false, message: "인증 실패" };
-//   }
-//   try {
-
-//     const formData = await request.formData();
-//     const actionType = formData.get('_action');
-
-//     if (actionType === 'changeStateAlarm') {
-//       const alarmId = formData.get('alarmId');
-//       const result = await changeStateAlarm(childAccessToken, alarmId);
-//       console.log("알람 결과", result)
-//         return { success: true };
-//     }
-//   } catch (error) {
-//     return null;
-//   }
-// }

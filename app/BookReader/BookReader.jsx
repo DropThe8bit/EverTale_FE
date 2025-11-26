@@ -753,14 +753,13 @@ export async function loader({ request, params }) {
 
     else if (fetchParam === "showLetter") {
       const letterData = await showEasterWggLetter(childAccessToken, storyId);
-      console.log("편지 결과", letterData);
+      // console.log("편지 결과", letterData);
       if (letterData?.isSuccess && letterData.result) {
         const availableDate = new Date(letterData.result.availableAt);
         const now = new Date();
         const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
         
         const nowKSTMoment = new Date(now.getTime() + KST_OFFSET_MS); // KST맞추기
-        console.log(nowKSTMoment);
         if (availableDate.getTime() <= nowKSTMoment.getTime()) { // 공개 날짜가 아닐 경우 반환하지 않음
           return letterData.result || [];
         } else return { isSuccess: false, message: "편지 공개일이 아닙니다." };
