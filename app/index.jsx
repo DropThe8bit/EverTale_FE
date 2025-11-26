@@ -1,6 +1,7 @@
 import { Link, redirect, useLoaderData, useSearchParams } from "react-router";
 import { inquiryAllStory } from "./api/book.server";
 import { getSession } from "./auth/auth";
+import "~/styles/app.css";
 
 
 export default function EveryLibrary() {

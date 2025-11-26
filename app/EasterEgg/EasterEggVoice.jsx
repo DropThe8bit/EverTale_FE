@@ -56,8 +56,8 @@ export default function EasterEggVoice() {
     setIsVoiceRegistered(true); // 음성 등록 상태를 true로 변경
   };
 
-  const handleBack = () => {
-    navigate(`/easter`);
+  const handleAgain = () => {
+    window.location.reload();
   };
 
   return (
@@ -88,8 +88,9 @@ export default function EasterEggVoice() {
         <div className="easteregg-voice-register">
           <button
             className="easteregg-voice-back-btn"
-            onClick={handleBack}
-          >취소</button>
+            onClick={handleAgain}
+          >다른 결과 보기
+          </button>
           <button
             className="easteregg-voice-submit-btn"
             onClick={() => setIsVoiceModalOpen(true)}
@@ -216,7 +217,7 @@ export async function loader({ request, params }) {
 
   const detectData = await detectYoloModel(childAccessToken, storyId);
   if (detectData?.isSuccess) {
-    return { username , detectData: detectData.result || [] };
+    return { username, detectData: detectData.result || [] };
   }
 }
 

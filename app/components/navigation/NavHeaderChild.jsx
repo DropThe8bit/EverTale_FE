@@ -1,13 +1,26 @@
-import { Link, NavLink, Outlet, useLocation } from "react-router"
+import { useState } from "react";
+import { Link, NavLink, Outlet, useFetcher, useLocation, useNavigate } from "react-router"
 import "~/styles/navHeader.css";
 
 export default function NavHeaderChild(props) {
   const location = useLocation();
   const params = new URLSearchParams(location.search); // 쿼리 파라미터 읽기
   params.set("user", "child");
-  const myName = props.myName || "로그인 | 회원가입";
+  const { myName, alarmData, onToggleAlarmModal } = props;
 
-  // console.log("start")
+  // const myName = props.myName || "로그인 | 회원가입";
+  const unreadCountAlarm = alarmData.unreadCount || null;
+  // const alarmSummaries = props.alarmData.alarmSummaries;
+  // const onToggleAlarmModal = props;
+
+  // const [showAlarmModalOpen, setAlarmModalOpen] = useState(false);
+
+const handleAlarmClick = () => {
+    if (onToggleAlarmModal) {
+      onToggleAlarmModal();
+    }
+  }
+
   return (
     <>
       <header className="nav-bar">
@@ -18,7 +31,12 @@ export default function NavHeaderChild(props) {
             </Link>
             <div className="nav-profile">
               <span>{myName}</span>
-              <img src="/nav_icon/profile.png" alt="profile" />
+              <img src="/nav_icon/profile.png" alt="profile" onClick={handleAlarmClick} />
+              {unreadCountAlarm != null ? (
+                <div className="nav-alarm">
+                  <p>{unreadCountAlarm}</p>
+                </div>
+              ) : (<></>)}
             </div>
           </li>
           <ul className="nav-list">
@@ -50,7 +68,15 @@ export default function NavHeaderChild(props) {
           </ul>
         </nav>
       </header>
+      {/* {showAlarmModalOpen && (
+        <AlarmModal
+          alarmSummaries={alarmSummaries}
+          myName={myName}
+          onClose={handleAlarmClose}
+        />
+      )} */}
     </>
   );
 }
+
 

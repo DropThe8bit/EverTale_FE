@@ -310,3 +310,55 @@ export async function profileLogoutUser(childAccessToken) {
     return null;
   }
 }
+
+export async function inquiryAlarm(childAccessToken) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/alarms?page=0&size=50&sort=alarmType`, 
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${childAccessToken}`
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to sign up:", error);
+    return null;
+  }
+}
+
+
+
+export async function changeStateAlarm(childAccessToken, alarmId) {
+  try {
+    console.log("알람 읽음 처리!!")
+    const response = await fetch(
+      `${API_BASE_URL}/api/alarms/${alarmId}`,  
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${childAccessToken}`
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.earror("Failed to sign up:", error);
+    return null;
+  }
+}

@@ -3,6 +3,7 @@ import "~/styles/navHeader.css";
 
 export default function NavHeader(props) {
   const myName = props.myName || "로그인 | 회원가입";
+
   return (
     <>
       <header className="nav-bar">
@@ -12,8 +13,8 @@ export default function NavHeader(props) {
               <img src="/images/logo.png" alt="EverTale logo" />
             </Link>
             <div className="nav-profile">
-              <span>{myName}</span>
-              <img src="/nav_icon/profile.png" alt="profile" />
+            <span>{myName}</span>
+            <img src="/nav_icon/profile.png" alt="profile" />
             </div>
           </li>
           <ul className="nav-list">

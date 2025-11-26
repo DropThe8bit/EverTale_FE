@@ -319,9 +319,11 @@ export default function BookReader() {
         if (finalLetterContent) {
           // 마지막 편지가 존재함 -> 편지 모달을 먼저 띄움
           setIsShowLetterModal(true);
+        } else {
+          // [마지막 편지가 없거나 미공개일 -> 엔딩 모달을 바로 띄움
+          setShowEndingModal(true);
         }
       } else {
-        // [마지막 편지가 없거나 미공개일 -> 엔딩 모달을 바로 띄움
         setShowEndingModal(true);
       }
     }
@@ -751,18 +753,19 @@ export async function loader({ request, params }) {
 
     else if (fetchParam === "showLetter") {
       const letterData = await showEasterWggLetter(childAccessToken, storyId);
-      console.log("편지 결과", letterData.result);
+      console.log("편지 결과", letterData);
       if (letterData?.isSuccess && letterData.result) {
         const availableDate = new Date(letterData.result.availableAt);
         const now = new Date();
         const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+        
         const nowKSTMoment = new Date(now.getTime() + KST_OFFSET_MS); // KST맞추기
+        console.log(nowKSTMoment);
         if (availableDate.getTime() <= nowKSTMoment.getTime()) { // 공개 날짜가 아닐 경우 반환하지 않음
           return letterData.result || [];
         } else return { isSuccess: false, message: "편지 공개일이 아닙니다." };
-
       }
-      return [];
+      return { isSuccess: false };
     }
 
     const bookData = await readingStoryPage(childAccessToken, storyId, pageNum);

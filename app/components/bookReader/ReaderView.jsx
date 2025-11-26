@@ -67,9 +67,10 @@ export default function StoryReaderView(props) {
       x: Math.round(originalX),
       y: Math.round(originalY),
     };
-    
+
     // 최종 원본 좌표를 콘솔에 찍고 부모에게 전달
     if (onImageClick) {
+      console.log(originalCoordinates);
       onImageClick(originalCoordinates);
     }
   };
