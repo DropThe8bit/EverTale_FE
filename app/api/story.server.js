@@ -52,7 +52,7 @@ export function createCharacter(childAccessToken, storyId, characterData, initCh
   const form = new FormData();
   form.append("request", new Blob([characterData], { type: "application/json" }));
   form.append("initCharacterImage", initCharacterImage);
-
+console.log("이미지 데이터",initCharacterImage)
   return apiFormRequest(`/api/stories/${storyId}/character-info`, "POST", childAccessToken, form);
 }
 

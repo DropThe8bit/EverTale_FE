@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, redirect, useActionData, useNavigate, useNavigation, useParams, useSearchParams } from "react-router";
 // import { json, unstable_parseMultipartFormData, unstable_createMemoryUploadHandler } from "@remix-run/node"; // Remix 유틸리티를 @remix-run/node 에서 가져옵니다.
 import { getSession } from '~/auth/auth';
@@ -24,7 +24,7 @@ export default function StoryCharacterCreator() {
 
   const [selectedTraits, setSelectedTraits] = useState([]);
   const [ageDisabled, setAgeDisabled] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
+  // const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,10 +41,46 @@ export default function StoryCharacterCreator() {
     setSelectedTraits(prev => prev.includes(trait) ? prev.filter(t => t !== trait) : [...prev, trait]);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) setImagePreview(URL.createObjectURL(file));
+
+
+
+
+  const [isSketchModalOpen, setIsSketchModalOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+
+  const fileInputHiddenRef = useRef(null);
+
+  function blobToFile(blob, fileName = "sketch.png") {
+    return new File([blob], fileName, { type: blob.type });
+  }
+  
+  const updateHiddenFileInput = (file) => {
+    const realFile = file instanceof Blob && !(file instanceof File)
+      ? blobToFile(file)
+      : file;
+  
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(realFile);  // 이제 에러 없음
+    fileInputHiddenRef.current.files = dataTransfer.files;
+  
+    setSelectedImageFile(realFile);
+    setImagePreview(URL.createObjectURL(realFile));
   };
+    
+  const handleFileUploadFromModal = (file) => {
+        console.log("파일 업로드:", file);
+    updateHiddenFileInput(file);
+    setIsSketchModalOpen(false);
+  };
+  
+
+  const handleSketchDone = (blob) => {
+    console.log("스케치 완료 Blob:", blob);
+    updateHiddenFileInput(blob);
+    setIsSketchModalOpen(false);
+  };
+  
 
   const isFormValid =
     character.characterName.trim() !== '' &&
@@ -67,6 +103,9 @@ export default function StoryCharacterCreator() {
   const params = useParams(); // URL에서 storyId를 가져오기 위해
   const isLoading = navigation.state === 'submitting';
   const isModalOpen = isLoading || !!actionData?.result;
+
+
+
 
 
   return (
@@ -127,7 +166,7 @@ export default function StoryCharacterCreator() {
 
           <div className="story-character-uploader-section">
             {/* 이미지 업로더 */}
-            <input type="file" name="initCharacterImage" id="story-character-image-upload" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} required />
+            {/* <input type="file" name="initCharacterImage" id="story-character-image-upload" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} required />
             <label htmlFor="story-character-image-upload" className="story-character-image-uploader">
               {imagePreview ? (
                 <img src={imagePreview} alt="주인공 미리보기" className="story-character-image-preview" />
@@ -135,6 +174,31 @@ export default function StoryCharacterCreator() {
                 <div className="story-character-uploader-placeholder">
                   <span className="story-character-folder-icon">📁</span>
                   <p>주인공을 그려서 올려주세요</p>
+                </div>
+              )}
+            </label> */}
+            {/* 이미지 업로더 */}
+            <input
+              ref={fileInputHiddenRef}
+              type="file"
+              name="initCharacterImage"
+              id="story-character-image-upload"
+              accept="image/*"
+              style={{ display: "none" }}
+              required
+            />
+
+
+            <label
+              className="story-character-image-uploader"
+              onClick={() => setIsSketchModalOpen(true)}
+            >
+              {imagePreview ? (
+                <img src={imagePreview} alt="주인공 미리보기" className="story-character-image-preview" />
+              ) : (
+                <div className="story-character-uploader-placeholder">
+                  <span className="story-character-folder-icon">📁</span>
+                  <p>주인공을 그려주세요</p>
                 </div>
               )}
             </label>
@@ -164,7 +228,125 @@ export default function StoryCharacterCreator() {
           onClose={() => window.location.reload()} // '다시 만들기'는 페이지 새로고침
         />
       )}
+      <SketchModal
+        isOpen={isSketchModalOpen}
+        onClose={() => setIsSketchModalOpen(false)}
+        onFinishSketch={handleSketchDone}
+        onUploadFile={handleFileUploadFromModal}
+      />
+
     </>
+  );
+}
+
+
+function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
+  const canvasRef = useRef(null);
+  const isDrawing = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0 });
+  const fileInputRef = useRef(null);
+
+  if (!isOpen) return null;
+
+  const startDrawing = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+
+    isDrawing.current = true;
+    lastPos.current = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+  };
+
+  const draw = (e) => {
+    if (!isDrawing.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    lastPos.current = { x, y };
+  };
+
+  const stopDrawing = () => {
+    isDrawing.current = false;
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const handleFinishSketch = () => {
+    const canvas = canvasRef.current;
+
+    canvas.toBlob((blob) => {
+      onFinishSketch(blob); // 부모로 Blob 전달
+      onClose();
+    }, "image/png");
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      onUploadFile(file);
+      onClose();
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-container">
+        <div className="modal-header">
+          <h2>주인공을 그려주세요!</h2>
+          <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={500}
+          className="sketch-canvas"
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+        />
+        <div className="modal-footer">
+          <button className="btn btn-clear" onClick={clearCanvas}>
+            전체 지우기
+          </button>
+          <button className="btn btn-secondary" onClick={() => fileInputRef.current.click()}>
+            파일 선택하기
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleFileSelect}
+          />
+          <button className="btn btn-primary" onClick={handleFinishSketch}>
+            스케치 완료
+          </button>
+        </div>
+
+      </div>
+    </div>
   );
 }
 

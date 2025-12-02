@@ -233,11 +233,10 @@ textarea {
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.6);
-	/* 반투명 검은색 */
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 1000;
+	z-index: 2000;
 }
 
 .modal-content {
@@ -276,4 +275,76 @@ textarea {
 .form-buttons button:hover {
 	background-color: #8DAE6E;
 	color: white;
+}
+
+
+.modal-container {
+	background: white;
+	padding: 20px;
+	border-radius: 16px;
+	width: 900px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+	display: flex;
+	flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+width:100%;
+}
+
+.modal-header h2 {
+	flex-grow: 1;
+	text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.sketch-canvas {
+	background: #fff;
+	border-radius: 8px;
+	margin: 20px 0;
+	/* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+	border: 2px solid #e0e0e0;
+
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+.btn {
+	padding: 10px 15px;
+	border-radius: 8px;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.btn-clear {
+	background: #ed4d4d;
+	color: white;
+}
+
+.btn-primary {
+	background: #8DAE6E;
+	color: white;
+
+}
+
+.btn-secondary {
+	background: #e0e0e0;
+	color: #333;
 }
