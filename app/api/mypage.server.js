@@ -88,6 +88,17 @@ export function accessMyProfileInfo(token) {
   return apiRequest(`/api/profiles/my`, "GET", null, token);
 }
 
+// 프로필 수정 
+export function updateProfile(childAccessToken, updatedContent) {
+  console.log("수정",updatedContent)
+  return apiRequest(
+    `/api/profiles/parent`,
+    "PATCH",
+    updatedContent,
+    childAccessToken
+  );
+}
+
 // 로그아웃
 export function logoutUser(childAccessToken) {
   return apiRequest(`/api/auth/logout`, "POST", null, childAccessToken);

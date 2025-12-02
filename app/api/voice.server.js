@@ -78,3 +78,27 @@ export async function createVoiceNarration(childAccessToken, voiceId, storyId, s
 	}
 }
 
+// 목소리 삭제
+export async function deleteVoice(childAccessToken, voiceId) {
+	try {
+		const response = await fetch(
+			`${API_BASE_URL}/api/voices/${voiceId}`,
+			{
+				method: 'DELETE',
+				headers: {
+					'Authorization': `Bearer ${childAccessToken}`
+				},
+			}
+		);
+		console.log("음성 삭제!!!", response);
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({}));
+			throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+		}
+    return { isSuccess: true }; 
+  } catch (error) {
+    console.error("deleteVoice error:", error);
+    return { isSuccess: false, message: error.message };
+  }
+}

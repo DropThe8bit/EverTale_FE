@@ -286,6 +286,7 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: 400;
+  display: flex;
 }
 
 .voice-dropdown-item:hover {
@@ -297,6 +298,24 @@
   font-size: 18px;
   font-weight: 500;
 
+}
+
+.voice-name {
+  flex: 1;
+}
+
+.voice-delete-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 6px;
+  margin-left: auto
+}
+
+/* hover 시 표시 */
+.voice-dropdown-item:hover .voice-delete-btn {
+  opacity: 1;
 }
 
 .add-voice-section {

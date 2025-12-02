@@ -85,6 +85,17 @@
   margin-left: 60px;
 }
 
+.my-profile-update-btn {
+  font-size: 12px;
+  font-weight: 500;
+  color: #777;
+  margin-top: 44px;
+  margin-left: 60px;
+  height: 30px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
 
 .mypage-bottom {
   position: fixed;
@@ -104,4 +115,9 @@
   height: 40px;
 }
 
-/* parent 부분 */
+.profile-input {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  height: 20px;
+  font-size: 14px;
+}

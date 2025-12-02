@@ -32,5 +32,6 @@ export default [
 
   layout("./Layouts/IndexNavSide.jsx", [ // 마이페이지
     route("/mypage", "./Mypage/IndexMypage.jsx"),
+    route("/mypage/update", "./Mypage/UpdateProfile.jsx"),
   ]),
 ];
