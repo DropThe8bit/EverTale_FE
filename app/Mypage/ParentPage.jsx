@@ -16,7 +16,7 @@ export default function ParentPage({ username, profile }) {
       <div className="mypage-middle">
         <div key={profile} className="my-profile-card">
           <div className="my-profile-guide">
-            <li>아이 이름</li>
+            <li>이름</li>
             <li>비밀번호</li>
             <li>이메일</li>
             <li>휴대폰</li>
@@ -27,7 +27,7 @@ export default function ParentPage({ username, profile }) {
             <li>{profile.email}</li>
             <li>{profile.phone}</li>
           </div>
-          <Link to="/update" className="my-profile-update">
+          <Link to="/mypage/update" className="my-profile-update">
             <p>회원정보수정</p>
           </Link>
 
