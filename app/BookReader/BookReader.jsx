@@ -6,7 +6,7 @@ import ReaderView from "~/components/bookReader/ReaderView"
 import QuizView from "~/components/bookReader/QuizView"
 import { getSession } from '~/auth/auth';
 import { createQuiz, inquiryAllQuiz, readingStoryPage, responseAllQuiz, selectedAnswerQuiz } from '~/api/book.server';
-import { inquiryVoiceList, registrationVoice } from '~/api/voice.server';
+import { deleteVoice, inquiryVoiceList, registrationVoice } from '~/api/voice.server';
 import { clickEasterEggVoice, showEasterWggLetter } from '~/api/easteregg.server';
 
 
@@ -353,6 +353,7 @@ export default function BookReader() {
   const dropdownRef = useRef(null);
   const voiceFetcher = useFetcher();
   const voiceNarrationFetcher = useFetcher();
+  const voiceDeleteFetcher = useFetcher();
 
   // 드롭다운 배경 클릭 
   useEffect(() => {
@@ -414,6 +415,14 @@ export default function BookReader() {
     setIsOpen(false);
   };
 
+
+function handleVoiceDelete(e, voice) {
+  e.stopPropagation();
+  const formData = new FormData();
+  formData.append("_action", "deleteVoice");
+  formData.append("voiceId", voice);
+  voiceDeleteFetcher.submit(formData, { method: "post" });
+}
 
 
 
@@ -587,7 +596,13 @@ export default function BookReader() {
                             className="voice-dropdown-item"
                             onClick={() => handleVoiceSelect(voice)}
                           >
-                            {voice.name}
+                            <span className="voice-name">{voice.name}</span>
+                            <span
+                              className="voice-delete-btn"
+                              onClick={(e) => handleVoiceDelete(e, voice.voiceId)}
+                            >
+                              ✕
+                            </span>
                           </div>
                         ))
                       )}
@@ -758,7 +773,7 @@ export async function loader({ request, params }) {
         const availableDate = new Date(letterData.result.availableAt);
         const now = new Date();
         const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-        
+
         const nowKSTMoment = new Date(now.getTime() + KST_OFFSET_MS); // KST맞추기
         if (availableDate.getTime() <= nowKSTMoment.getTime()) { // 공개 날짜가 아닐 경우 반환하지 않음
           return letterData.result || [];
@@ -803,6 +818,10 @@ export async function action({ request, params }) {
     const sceneId = formData.get("sceneId");
     const streamUrl = `/play-voice?voiceId=${voiceId}&storyId=${storyId}&sceneId=${sceneId}`;
     return { audioUrl: streamUrl };
+  }
+  else if (actionType === 'deleteVoice') {
+    const voiceId = formData.get("voiceId");
+    return await deleteVoice(childAccessToken, voiceId);
   }
   else if (actionType === 'createQuizzes') {
     try { // 컴포넌트가 보낸 'count' 값을 읽어오기 (기본값 0)
