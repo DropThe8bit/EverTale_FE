@@ -239,7 +239,6 @@ export default function StoryCharacterCreator() {
   );
 }
 
-
 function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
   const canvasRef = useRef(null);
   const isDrawing = useRef(false);
@@ -248,15 +247,19 @@ function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
 
   if (!isOpen) return null;
 
-  const startDrawing = (e) => {
+  const getPos = (e) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
 
-    isDrawing.current = true;
-    lastPos.current = {
+    return {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     };
+  };
+
+  const startDrawing = (e) => {
+    isDrawing.current = true;
+    lastPos.current = getPos(e);
   };
 
   const draw = (e) => {
@@ -264,10 +267,7 @@ function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getPos(e);
 
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 4;
@@ -295,7 +295,7 @@ function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
     const canvas = canvasRef.current;
 
     canvas.toBlob((blob) => {
-      onFinishSketch(blob); // 부모로 Blob 전달
+      onFinishSketch(blob);
       onClose();
     }, "image/png");
   };
@@ -321,11 +321,12 @@ function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
           width={800}
           height={500}
           className="sketch-canvas"
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
+          onPointerDown={startDrawing}
+          onPointerMove={draw}
+          onPointerUp={stopDrawing}
+          onPointerLeave={stopDrawing}
         />
+
         <div className="modal-footer">
           <button className="btn btn-clear" onClick={clearCanvas}>
             전체 지우기
@@ -344,11 +345,11 @@ function SketchModal({ isOpen, onClose, onFinishSketch, onUploadFile }) {
             스케치 완료
           </button>
         </div>
-
       </div>
     </div>
   );
 }
+
 
 function CharacterPreviewModal({ isLoading, imageUrl, storyId, onClose, characterName }) {
   const navigate = useNavigate();
