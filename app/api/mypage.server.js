@@ -1,17 +1,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export async function signUpUser(userData) {
+// 공통 JSON 요청 유틸
+async function apiRequest(endpoint, method = "GET", body = null, token = null) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/signup`, 
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      }
-    );
+    const headers = {};
+
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    if (body) headers["Content-Type"] = "application/json";
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -20,345 +21,89 @@ export async function signUpUser(userData) {
 
     return await response.json();
   } catch (error) {
-    console.error("Failed to sign up:", error);
+    console.error("API Error:", error);
     return null;
   }
 }
 
-export async function loginUser(loginData) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/login`,  
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 회원가입
+export function signUpUser(userData) {
+  return apiRequest(`/api/auth/signup`, "POST", userData);
 }
 
-
-export async function loginNaverUser(code, state) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/naver-login?code=${code}&state=${state}`,  
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 일반 로그인
+export function loginUser(loginData) {
+  return apiRequest(`/api/auth/login`, "POST", loginData);
 }
 
+// 네이버 로그인
+export function loginNaverUser(code, state) {
+  return apiRequest(`/api/auth/naver-login?code=${code}&state=${state}`, "GET");
+}
 
+// 부모 프로필 생성
 export async function createParentProfile(token) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/parent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/api/profiles/parent`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
 
-    // 생성에 성공한 경우 (HTTP 200 OK 또는 201 Created)
-    if (response.ok) {
-      return await response.json();
-    }
-    
+    if (response.ok) return await response.json();
+
     if (response.status === 409) {
-      console.log("프로필이 이미 존재하므로, 생성을 건너뛰고 성공으로 처리합니다.");
       return { isSuccess: true, message: "프로필이 이미 존재합니다." };
     }
 
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-
   } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' }; 
+    console.error("Failed to create parent profile:", error);
+    return { isSuccess: false, message: error.message, code: "FETCH_ERROR" };
   }
 }
 
-
-export async function initProfileList(token) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/all`, 
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 전체 프로필 목록 조회
+export function initProfileList(token) {
+  return apiRequest(`/api/profiles/all`, "GET", null, token);
 }
 
-
-export async function childProfileList(token) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/child`, 
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 아이 프로필 목록 조회
+export function childProfileList(token) {
+  return apiRequest(`/api/profiles/child`, "GET", null, token);
 }
 
-
-export async function createChildProfile(token, newProfileData) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/child`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(newProfileData),
-      }
-    );
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 아이 프로필 생성
+export function createChildProfile(token, newProfileData) {
+  return apiRequest(`/api/profiles/child`, "POST", newProfileData, token);
 }
 
-export async function accessProfileToken(profileId, token) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/${profileId}`, 
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 프로필 전환 토큰 발급
+export function accessProfileToken(profileId, token) {
+  return apiRequest(`/api/profiles/${profileId}`, "POST", null, token);
 }
 
-// export async function accessRefreshToken(profileId, token) {
-//   try {
-//     const response = await fetch(
-//       `${API_BASE_URL}/api/auth/profiles/reissue${profileId}`, 
-//       {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${token}`
-//         },
-//       }
-//     );
-
-//     if (!response.ok) {
-//       const errorData = await response.json().catch(() => ({}));
-//       throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Failed to sign up:", error);
-//     return null;
-//   }
-// }
-
-export async function accessMyProfileInfo(token) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/profiles/my`, 
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 내 프로필 정보 조회
+export function accessMyProfileInfo(token) {
+  return apiRequest(`/api/profiles/my`, "GET", null, token);
 }
 
-export async function logoutUser(childAccessToken) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/logout`,  
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 로그아웃
+export function logoutUser(childAccessToken) {
+  return apiRequest(`/api/auth/logout`, "POST", null, childAccessToken);
 }
 
-export async function profileLogoutUser(childAccessToken) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/auth/profiles/logout`,  
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 프로필 로그아웃
+export function profileLogoutUser(childAccessToken) {
+  return apiRequest(`/api/auth/profiles/logout`, "POST", null, childAccessToken);
 }
 
-export async function inquiryAlarm(childAccessToken) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/alarms?page=0&size=50&sort=alarmType`, 
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to sign up:", error);
-    return null;
-  }
+// 알람 조회
+export function inquiryAlarm(childAccessToken) {
+  return apiRequest(`/api/alarms?page=0&size=50&sort=alarmType`, "GET", null, childAccessToken);
 }
 
-
-
-export async function changeStateAlarm(childAccessToken, alarmId) {
-  try {
-    console.log("알람 읽음 처리!!")
-    const response = await fetch(
-      `${API_BASE_URL}/api/alarms/${alarmId}`,  
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.earror("Failed to sign up:", error);
-    return null;
-  }
+// 알람 읽음 처리
+export function changeStateAlarm(childAccessToken, alarmId) {
+  return apiRequest(`/api/alarms/${alarmId}`, "POST", null, childAccessToken);
 }

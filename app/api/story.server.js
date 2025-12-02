@@ -1,285 +1,120 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export async function createStoryId(childAccessToken) {
+// 공통 JSON 요청
+async function apiRequest(endpoint, method = "GET", token, body = null) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/create`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        ...(body ? { "Content-Type": "application/json" } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
     }
     return await response.json();
-
   } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+    return { isSuccess: false, message: error.message, code: "FETCH_ERROR" };
+  }
+}
+
+// 공통 FormData 요청
+async function apiFormRequest(endpoint, method = "POST", token, formData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers: { "Authorization": `Bearer ${token}` },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    return { isSuccess: false, message: error.message, code: "FETCH_ERROR" };
   }
 }
 
 
-export async function createCharacter(childAccessToken, storyId, characterData, initCharacterImage) {
-  try {
-    const apiFormData = new FormData();
-    apiFormData.append(
-      'request',
-      new Blob([characterData], { type: "application/json" })
-    );
-    apiFormData.append('initCharacterImage', initCharacterImage);
-    console.log("캐릭터 만들기 얍!")
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/character-info`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: apiFormData,
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      // console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 최초 스토리 id 생성 
+export function createStoryId(childAccessToken) {
+  return apiRequest(`/api/stories/create`, "POST", childAccessToken);
 }
 
+// 캐릭터 생성 
+export function createCharacter(childAccessToken, storyId, characterData, initCharacterImage) {
+  const form = new FormData();
+  form.append("request", new Blob([characterData], { type: "application/json" }));
+  form.append("initCharacterImage", initCharacterImage);
 
-export async function createInitStory(childAccessToken, storyId, initStoryData) {
-  try {
-    console.log("초기 스토리 만들기 얍!")
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/init-story`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(initStoryData),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+  return apiFormRequest(`/api/stories/${storyId}/character-info`, "POST", childAccessToken, form);
 }
 
-
-export async function updateSceneStory(childAccessToken, storyId, pageNum, updatedContent) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/scenes/${pageNum}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(updatedContent),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 초기 스토리 생성 
+export function createInitStory(childAccessToken, storyId, initStoryData) {
+  return apiRequest(
+    `/api/stories/${storyId}/init-story`,
+    "POST",
+    childAccessToken,
+    initStoryData
+  );
 }
 
-
-export async function createSceneImage(childAccessToken, storyId, pageNum, sketch, prompt) {
-  try {
-    const apiFormData = new FormData();
-    apiFormData.append('prompt', prompt);
-    apiFormData.append('sketch', sketch);
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/scenes/${pageNum}/controlnet`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: apiFormData,
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 스토리 수정 
+export function updateSceneStory(childAccessToken, storyId, pageNum, updatedContent) {
+  return apiRequest(
+    `/api/stories/${storyId}/scenes/${pageNum}`,
+    "PATCH",
+    childAccessToken,
+    updatedContent
+  );
 }
 
+// 각 페이지 이미지 생성 
+export function createSceneImage(childAccessToken, storyId, pageNum, sketch, prompt) {
+  const form = new FormData();
+  form.append("prompt", prompt);
+  form.append("sketch", sketch);
 
-export async function createNextSceneQuestion(childAccessToken, storyId, pageNum) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/scenes/${pageNum}/question`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+  return apiFormRequest(
+    `/api/stories/${storyId}/scenes/${pageNum}/controlnet`,
+    "POST",
+    childAccessToken,
+    form
+  );
 }
 
-
-
-export async function createNextStoryfromAnswer(childAccessToken, storyId, pageNum, question, answer) {
-  try {
-    const requestData = {
-      question: question,
-      answer: answer,
-    };
-    console.log("다음 줄거리 만들기 얍!");
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/scenes/${pageNum}/next-from-answer`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(requestData),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 다음 페이지 질문 생성 
+export function createNextSceneQuestion(childAccessToken, storyId, pageNum) {
+  return apiRequest(
+    `/api/stories/${storyId}/scenes/${pageNum}/question`,
+    "POST",
+    childAccessToken
+  );
 }
 
-
-export async function setStoryTitle(childAccessToken, storyId, title) {
-  try {
-    const encodedTitle = encodeURIComponent(title);
-    console.log("제목 만들기 얍!", encodedTitle);
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/${storyId}/title?title=${encodedTitle}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 질문/답으로 다음 스토리 생성 
+export function createNextStoryfromAnswer(childAccessToken, storyId, pageNum, question, answer) {
+  return apiRequest(
+    `/api/stories/${storyId}/scenes/${pageNum}/next-from-answer`,
+    "POST",
+    childAccessToken,
+    { question, answer }
+  );
 }
 
-
-export async function inquiryMyStory(childAccessToken) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/stories/4?page=0&size=20&sort=title`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 스토리 제목 설정 
+export function setStoryTitle(childAccessToken, storyId, title) {
+  const encoded = encodeURIComponent(title);
+  return apiRequest(
+    `/api/stories/${storyId}/title?title=${encoded}`,
+    "PATCH",
+    childAccessToken
+  );
 }

@@ -1,17 +1,16 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export async function inquiryGetCreatableVoiceEasterEggBooks(childAccessToken, profileId) {
+// 공통 GET/POST(JSON) 요청 유틸
+async function apiRequest(endpoint, method = "GET", token, body = null) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/voices/${profileId}/created?page=0&size=50&sort=title`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        ...(body ? { "Content-Type": "application/json" } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -20,86 +19,22 @@ export async function inquiryGetCreatableVoiceEasterEggBooks(childAccessToken, p
     return await response.json();
 
   } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+    console.error("API 요청 오류:", error);
+    return { isSuccess: false, message: error.message, code: "FETCH_ERROR" };
   }
 }
 
-export async function inquiryGetCreatedVoiceEasterEggBooks(childAccessToken, profileId) {
+// formData 요청 유틸 (파일 업로드용)
+async function apiFormRequest(endpoint, method = "POST", token, formData) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/voices/${profileId}/creatable?page=0&size=50&sort=title`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
-}
-
-
-export async function detectYoloModel(childAccessToken, storyId) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/voices/${storyId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
-}
-
-
-export async function registrationEasterEggVoice(childAccessToken, voiceFile, storyId, requestDto) {
-  try {
-    const apiFormData = new FormData();
-    apiFormData.append('voiceFile', voiceFile);
-    apiFormData.append('requestDto', JSON.stringify(requestDto));
-    console.log("이스터에그 목소리 등록 얍!");
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/voices/${storyId}`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: apiFormData,
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method,
+      headers: {
+        "Authorization": `Bearer ${token}`
+        // Content-Type 넣지 말아야 form boundary 자동 생성됨
+      },
+      body: formData
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -108,150 +43,101 @@ export async function registrationEasterEggVoice(childAccessToken, voiceFile, st
     return await response.json();
 
   } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
-}
-
-export async function clickEasterEggVoice(childAccessToken, sceneId, clickDto) {
-  try {
-    console.log("이스터에그 목소리 나와라 얍!", clickDto);
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/voices/${sceneId}/play`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(clickDto),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
+    console.error("API 요청 오류:", error);
+    return { isSuccess: false, message: error.message, code: "FETCH_ERROR" };
   }
 }
 
 
-export async function inquiryGetCreatableLetterEasterEggBooks(childAccessToken, profileId) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/letters/${profileId}/created?page=0&size=50&sort=title`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 만들 수 있는 음성 이스터에그 동화 조회 
+export function inquiryGetCreatableVoiceEasterEggBooks(childAccessToken, profileId) {
+  return apiRequest(
+    `/api/eastereggs/voices/${profileId}/created?page=0&size=50&sort=title`,
+    "GET",
+    childAccessToken
+  );
 }
 
-export async function inquiryGetCreatedLetterEasterEggBooks(childAccessToken, profileId) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/letters/${profileId}/creatable?page=0&size=50&sort=title`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
-
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 이미 생성된 음성 이스터에그 동화 조회 
+export function inquiryGetCreatedVoiceEasterEggBooks(childAccessToken, profileId) {
+  return apiRequest(
+    `/api/eastereggs/voices/${profileId}/creatable?page=0&size=50&sort=title`,
+    "GET",
+    childAccessToken
+  );
 }
 
-export async function createEasterEggLetter(childAccessToken, storyId, content, imageNum, availableAt) {
-  try {
-    const apiFormData = {
-      content: content,
-      imageNum: imageNum,
-      availableAt: availableAt
-    };
-    console.log("이스터에그 편지등록 얍!", apiFormData, storyId);
+// YOLO 감지 
+export function detectYoloModel(childAccessToken, storyId) {
+  return apiRequest(
+    `/api/eastereggs/voices/${storyId}`,
+    "GET",
+    childAccessToken
+  );
+}
 
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/${storyId}/letters`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(apiFormData),
-      }
-    );
+// 음성 이스터에그 등록 
+export function registrationEasterEggVoice(childAccessToken, voiceFile, storyId, requestDto) {
+  const form = new FormData();
+  form.append("voiceFile", voiceFile);
+  form.append("requestDto", JSON.stringify(requestDto));
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
-    }
-    return await response.json();
+  return apiFormRequest(
+    `/api/eastereggs/voices/${storyId}`,
+    "POST",
+    childAccessToken,
+    form
+  );
+}
 
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 음성 이스터에그 클릭 후 재생
+export function clickEasterEggVoice(childAccessToken, sceneId, clickDto) {
+  return apiRequest(
+    `/api/eastereggs/voices/${sceneId}/play`,
+    "POST",
+    childAccessToken,
+    clickDto
+  );
+}
+
+// 생성 가능한 편지 이스터에그 동화 조회 
+export function inquiryGetCreatableLetterEasterEggBooks(childAccessToken, profileId) {
+  return apiRequest(
+    `/api/eastereggs/letters/${profileId}/created?page=0&size=50&sort=title`,
+    "GET",
+    childAccessToken
+  );
 }
 
 
-export async function showEasterWggLetter(childAccessToken, storyId) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/eastereggs/${storyId}/letters`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${childAccessToken}`
-        },
-        body: JSON.stringify(),
-      }
-    );
+// 이미 생성된 편지 이스터에그 동화 조회 
+export function inquiryGetCreatedLetterEasterEggBooks(childAccessToken, profileId) {
+  return apiRequest(
+    `/api/eastereggs/letters/${profileId}/creatable?page=0&size=50&sort=title`,
+    "GET",
+    childAccessToken
+  );
+}
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({
-        message: "서버가 JSON 형식의 에러 메시지를 반환하지 않았습니다."
-      }));
-      console.error("외부 API 서버가 반환한 에러:", errorData);
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+// 편지 이스터에그 생성
+export function createEasterEggLetter(childAccessToken, storyId, content, imageNum, availableAt) {
+  return apiRequest(
+    `/api/eastereggs/${storyId}/letters`,
+    "POST",
+    childAccessToken,
+    {
+      content,
+      imageNum,
+      availableAt
     }
-    return await response.json();
+  );
+}
 
-  } catch (error) {
-    console.error("Failed to create story:", error);
-    return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
-  }
+// 편지 이스터에그 조회
+export function showEasterWggLetter(childAccessToken, storyId) {
+  return apiRequest(
+    `/api/eastereggs/${storyId}/letters`,
+    "GET",
+    childAccessToken
+  );
 }

@@ -1,10 +1,10 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// 목소리 등록
 export async function registrationVoice(childAccessToken, voiceFile) {
 	try {
 		const apiFormData = new FormData();
 		apiFormData.append('voiceFile', voiceFile);
-		console.log("목소리 등록 얍!");
 		const response = await fetch(
 			`${API_BASE_URL}/api/voices`,
 			{
@@ -28,6 +28,7 @@ export async function registrationVoice(childAccessToken, voiceFile) {
 	}
 }
 
+// 목소리 리스트 조회
 export async function inquiryVoiceList(childAccessToken) {
 	try {
 		const response = await fetch(
@@ -52,10 +53,9 @@ export async function inquiryVoiceList(childAccessToken) {
 	}
 }
 
-
+// 목소리로 씬 나레이션 생성
 export async function createVoiceNarration(childAccessToken, voiceId, storyId, sceneId) {
 	try {
-		console.log("목소리 출력 얍!", sceneId);
 		const response = await fetch(
 			`${API_BASE_URL}/api/voices/${voiceId}/stories/${storyId}/scenes/${sceneId}`,
 			{
@@ -77,3 +77,4 @@ export async function createVoiceNarration(childAccessToken, voiceId, storyId, s
 		return { isSuccess: false, message: error.message, code: 'FETCH_ERROR' };
 	}
 }
+
