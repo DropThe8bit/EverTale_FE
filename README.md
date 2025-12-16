@@ -55,14 +55,3 @@ fetch('/api/story', {
 })
 ```
 <br>
-
-## 실행 방법 (Run dev)
-필수 ENV 변수 (이메일로 별도 첨부 .env파일)를 기입합니다.
-```text
-VITE_API_BASE_URL=
-SESSION_SECRET=
-```
-개발 환경 실행은 아래와 같습니다!
-```text
-npm run dev
-```
