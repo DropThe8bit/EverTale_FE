@@ -46,8 +46,8 @@ Frontend 실행을 위해 필수 환경 변수(.env 파일) 설정이 필요합�
 프로젝트 루트 디렉토리에 .env 파일을 생성한 후, 아래 항목을 기입합니다.
 
 ```
-VITE_API_BASE_URL=http://3.37.217.181:8080
-SESSION_SECRET="e4a3e0b1f2c3d4a5b5f6a7b8c9d0e1f2a36c7d8e9f0a1b2c3d4eb4c5d6e7f8a0"
+VITE_API_BASE_URL=
+SESSION_SECRET=
 ```
 
 > ⚠️ .env 파일은 보안상 GitHub에 포함되지 않습니다.
